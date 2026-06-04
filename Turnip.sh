@@ -2,6 +2,14 @@
 
 set -uo pipefail
 
+fail() {
+    echo
+    echo "ERROR: $1"
+    exit 1
+}
+
+trap 'fail "script only works in root or apt operation failed"' ERR
+
 echo "WARNING: This script only works when run as root."
 echo "You must also have deb-src entries enabled in your APT sources."
 echo
@@ -25,10 +33,10 @@ case "$choice" in
 esac
 
 echo "[1/14] Updating package lists and upgrading system..."
-apt update && apt upgrade -y
+apt update && apt upgrade -y || fail "script only works in root"
 
 echo "[2/14] Installing Mesa build dependencies..."
-apt build-dep mesa -y
+apt build-dep mesa -y || fail "you should put deb-src in your apt lists"
 
 echo "[3/14] Installing required tools and libraries..."
 apt install -y \
@@ -45,7 +53,7 @@ apt install -y \
     expat \
     libarchive-dev \
     libxml2 \
-    libxml2-dev
+    libxml2-dev || fail "script only works in root"
 
 echo "[4/14] Creating Turnip workspace..."
 mkdir -p Turnip
