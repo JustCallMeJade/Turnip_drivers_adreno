@@ -2,14 +2,15 @@
 
 set -uo pipefail
 
-echo "[CI] Starting Turnip Freedreno build..."
-
-echo "Root required + deb-src enabled."
+########################################
+# SAFETY CHECK
+########################################
+echo "WARNING: Root required + deb-src must be enabled."
 echo "Press A to continue, B to exit."
 
 read -r input
 case "$input" in
-  A|a) echo "Starting..." ;;
+  A|a) echo "Starting build..." ;;
   B|b) exit 0 ;;
   *) exit 1 ;;
 esac
@@ -17,10 +18,14 @@ esac
 ########################################
 # SYSTEM SETUP
 ########################################
-apt update && apt upgrade -y
+echo "[1/10] Updating system..."
+apt update --fix-missing && apt upgrade -y
+
+echo "[2/10] Installing Mesa build dependencies..."
 apt build-dep mesa -y
 
-apt install -y \
+echo "[3/10] Installing required packages..."
+apt install --fix-missing -y \
   git wget cmake pkg-config patchelf zip \
   meson ninja-build clang lld \
   expat libarchive-dev libxml2 libxml2-dev
@@ -28,22 +33,26 @@ apt install -y \
 ########################################
 # WORKSPACE
 ########################################
+echo "[4/10] Creating workspace..."
 mkdir -p /root/Turnip
 cd /root/Turnip
 
+echo "[5/10] Downloading NDK..."
 wget -q https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz
+
 tar -xf android-ndk-r29-linux-aarch64.tar.gz
 
 export NDK=/root/r29/toolchains/llvm/prebuilt/linux-x86_64/bin
 
 ########################################
-# MESA
+# MESA SOURCE
 ########################################
+echo "[6/10] Cloning Mesa..."
 git clone https://gitlab.freedesktop.org/mesa/mesa.git --depth 1
 cd mesa
 
 ########################################
-# MESON FILES (NO CCACHE)
+# MESON CONFIG
 ########################################
 cat <<EOF > android-aarch64.txt
 [binaries]
@@ -53,6 +62,12 @@ cpp = '$NDK/aarch64-linux-android34-clang++'
 c_ld = '$NDK/ld.lld'
 cpp_ld = '$NDK/ld.lld'
 strip = '$NDK/llvm-strip'
+
+[host_machine]
+system = 'android'
+cpu_family = 'aarch64'
+cpu = 'armv8'
+endian = 'little'
 EOF
 
 cat <<EOF > native.txt
@@ -63,11 +78,16 @@ ar = 'llvm-ar'
 strip = 'llvm-strip'
 c_ld = 'ld.lld'
 cpp_ld = 'ld.lld'
+system = 'linux'
+cpu_family = 'aarch64'
+cpu = 'armv8'
+endian = 'little'
 EOF
 
 ########################################
 # BUILD
 ########################################
+echo "[7/10] Configuring build..."
 meson setup build \
   --cross-file android-aarch64.txt \
   --native-file native.txt \
@@ -80,17 +100,23 @@ meson setup build \
   -Dandroid-stub=true \
   -Dplatform-sdk-version=34
 
+echo "[8/10] Building..."
 ninja -C build -j"$(nproc)"
+
+echo "[9/10] Installing..."
 ninja -C build install
 
 ########################################
-# OUTPUT
+# OUTPUT LIB
 ########################################
 cd /root/turnip/lib
 
 patchelf --set-soname vulkan.ad07xx.so libvulkan_freedreno.so
 mv libvulkan_freedreno.so vulkan.ad07xx.so
 
+########################################
+# VERSION DETECTION (CLEAN)
+########################################
 cd /root/Turnip/mesa
 
 RAW_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "unknown")
@@ -98,6 +124,11 @@ VERSION=$(echo "$RAW_TAG" | sed 's/[^0-9.]*//g')
 
 NAME="A8XX Turnip v$VERSION"
 ZIP="Turnip-v$VERSION.zip"
+
+########################################
+# PACKAGE
+########################################
+echo "[10/10] Packaging..."
 
 cd /root/turnip/lib
 
@@ -115,5 +146,7 @@ EOF
 
 zip -r "$ZIP" vulkan.ad07xx.so meta.json
 
-echo "[CI] DONE"
+echo ""
+echo "DONE"
+echo "Name: $NAME"
 echo "Output: /root/turnip/lib/$ZIP"
