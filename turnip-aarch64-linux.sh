@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 set -euo pipefail
 
 #========================
@@ -145,8 +145,18 @@ build_lib_for_android() {
 	cat <<EOF > android-aarch64.txt
 [binaries]
 ar = '$NDK/llvm-ar'
-c = '$NDK/aarch64-linux-android$sdkver-clang'
-cpp = '$NDK/aarch64-linux-android$sdkver-clang++'
+
+c = [
+  '/root/r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang'
+]
+
+cpp = ['/root/r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang++',
+  '-fno-exceptions',
+  '-fno-unwind-tables',
+  '-fno-asynchronous-unwind-tables',
+  '--start-no-unused-arguments',
+  '-static-libstdc++',
+  '--end-no-unused-arguments']
 c_ld = '$NDK/ld.lld'
 cpp_ld = '$NDK/ld.lld'
 strip = '$NDK/llvm-strip'
