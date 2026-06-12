@@ -2,19 +2,15 @@
 set -euo pipefail
 
 #========================
-# CONFIG
+# VARIABLES
 #========================
 deps="git meson ninja patchelf unzip curl pip3 flex bison zip glslang glslangValidator wget"
 workdir="$(pwd)/turnip_workdir"
-
 ndkver="r29"
 sdkver="35"
-
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
 srcfolder="Mesa-Android"
 author="JustCallMeJade"
-
-# Hardcoded version (no auto-detection)
 MESA_VERSION="26.2.0-V2.1"
 
 #========================
