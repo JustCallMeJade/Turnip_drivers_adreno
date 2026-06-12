@@ -9,11 +9,15 @@ mkdir turnip_workdir
 cd turnip_workdir
 
 rm -rf r29
-wget -O "ndk.tar.gz" "https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz"
+
+wget -O "ndk.tar.gz" "https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz" 
+
 tar -xzvf ndk.tar.gz
 
 rm -rf Mesa-android
+
 git clone https://gitlab.freedesktop.org/mesa/mesa.git --depth=1 Mesa-Android
+
 cd Mesa-android
 
 cat <<'PATCH_EOF' > patch.patch
@@ -313,4 +317,8 @@ cat <<EOF > meta.json
 }
 EOF
 
-zip -9 "Turnip-v$MESA.zip" vulkan.ad07xx.so meta.json
+mkdir /root/build
+
+zip -9 "/root/build/Turnip-v$MESA.zip" vulkan.ad07xx.so meta.json
+
+echo "Build complete."
