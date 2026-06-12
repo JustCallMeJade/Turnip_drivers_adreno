@@ -2,39 +2,16 @@
 set -euo pipefail
 
 #========================
-# VARIABLES
+# CONFIG
 #========================
 deps="git meson ninja patchelf unzip curl pip3 flex bison zip glslang glslangValidator wget"
 workdir="$(pwd)/turnip_workdir"
 ndkver="r29"
 sdkver="35"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
-srcfolder="Mesa-Android"
+srcfolder="mesa"
 author="JustCallMeJade"
 MESA_VERSION="26.2.0-V2.1"
-
-#========================
-# UTIL: RETRY DOWNLOAD
-#========================
-download() {
-	local url="$1"
-	local out="$2"
-	local tries=3
-
-	for i in $(seq 1 $tries); do
-		echo "Downloading ($i/$tries): $url"
-
-		if wget -O "$out" "$url"; then
-			return 0
-		fi
-
-		echo "Retrying..."
-		sleep 2
-	done
-
-	echo "Failed to download: $url"
-	exit 1
-}
 
 #========================
 # MAIN
@@ -85,9 +62,8 @@ prepare_workdir() {
 	cd "$workdir"
 
 	# ---- NDK ----
-	download \
-		"https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz" \
-		"ndk.tar.gz"
+	wget -O "ndk.tar.gz" \
+		"https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz"
 
 	echo "Extracting NDK..."
 	tar -xzvf ndk.tar.gz
@@ -398,8 +374,8 @@ build_lib_for_android() {
 	cat <<EOF > android-aarch64.txt
 [binaries]
 ar = '$NDK/llvm-ar'
-c = '/root/r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang'
-cpp = ['/root/r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments']
+c = '$NDK/aarch64-linux-android$sdkver-clang'
+cpp = ['$NDK/aarch64-linux-android$sdkver-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments']
 c_ld = '$NDK/ld.lld'
 cpp_ld = '$NDK/ld.lld'
 strip = '$NDK/llvm-strip'
