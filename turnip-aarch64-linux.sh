@@ -6,6 +6,7 @@ pip3 install --quiet mako || true
 mkdir -p "$(pwd)/turnip_workdir"
 cd "$(pwd)/turnip_workdir"
 
+rm -rf r29
 wget -O "ndk.tar.gz" "https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz"
 tar -xzvf ndk.tar.gz
 
