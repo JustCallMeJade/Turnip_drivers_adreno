@@ -32,6 +32,9 @@ https://github.com/whitebelyash
 Termux Proot-distro:   https://github.com/termux/proot-distro
 
 
+Gpu Patches And Hacks:  Vauzi
+
+
 
 ## Supported GPUs (6xx supported any)
 
