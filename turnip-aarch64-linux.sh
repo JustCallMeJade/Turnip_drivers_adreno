@@ -14,6 +14,9 @@ mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
 srcfolder="mesa"
 author="JustCallMeJade"
 
+# Hardcoded version (no auto-detection)
+MESA_VERSION="26.2.0-V2.1"
+
 #========================
 # UTIL: RETRY DOWNLOAD
 #========================
@@ -48,7 +51,7 @@ run_all() {
 
 	cd "$workdir/$srcfolder"
 
-	resolve_mesa_version
+	echo "Using hardcoded Mesa version: $MESA_VERSION"
 
 	build_lib_for_android
 }
@@ -98,32 +101,6 @@ prepare_workdir() {
 		"$mesasrc" \
 		--depth=1 \
 		"$srcfolder"
-}
-
-#========================
-# VERSION RESOLUTION
-#========================
-resolve_mesa_version() {
-	echo "Resolving Mesa version..."
-
-	git fetch --tags --quiet || true
-
-	MESA_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || true)
-
-	if [ -z "${MESA_VERSION}" ]; then
-		MESA_VERSION=$(git rev-parse --short HEAD)
-	fi
-
-	# sanitize (keep numbers only where possible)
-	MESA_VERSION=$(echo "$MESA_VERSION" | sed 's/[^0-9.]*//g')
-
-	if [ -z "$MESA_VERSION" ]; then
-		MESA_VERSION="unknown"
-	fi
-
-	export MESA_VERSION
-
-	echo "Mesa version: $MESA_VERSION"
 }
 
 #========================
@@ -198,6 +175,9 @@ EOF
 
 	cd /tmp/turnip/lib
 
+	patchelf --set-soname vulkan.ad07xx.so libvulkan_freedreno.so
+	mv libvulkan_freedreno.so vulkan.ad07xx.so
+
 	cat <<EOF > meta.json
 {
   "schemaVersion": 1,
@@ -208,12 +188,12 @@ EOF
   "vendor": "Mesa",
   "driverVersion": "Vulkan 1.4.335",
   "minApi": 28,
-  "libraryName": "libvulkan_freedreno.so"
+  "libraryName": "vulkan.ad07xx.so"
 }
 EOF
 
 	zip -9 "Turnip-v$MESA_VERSION.zip" \
-		libvulkan_freedreno.so \
+		vulkan.ad07xx.so \
 		meta.json
 
 	echo "================================="
