@@ -146,7 +146,7 @@ EOF
 			-Dvulkan-beta=true \
 			-Dfreedreno-kmds=kgsl \
 			-Degl=disabled \
-			-Dplatform-sdk-version=36 \
+			-Dplatform-sdk-version=34 \
 			-Dandroid-libbacktrace=disabled \
 			--reconfigure
 
