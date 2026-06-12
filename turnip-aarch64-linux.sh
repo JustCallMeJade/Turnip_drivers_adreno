@@ -1,124 +1,30 @@
 #!/bin/bash -e
 set -euo pipefail
 
-#========================
-# CONFIG
-#========================
-deps="git meson ninja patchelf unzip curl pip3 flex bison zip glslang glslangValidator wget"
-workdir="$(pwd)/turnip_workdir"
-ndkver="r29"
-sdkver="35"
-mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
-srcfolder="Mesa-android"
-author="JustCallMeJade"
-MESA_VERSION="26.2.0-V2.1"
+pip3 install --quiet mako || true
 
-#========================
-# MAIN
-#========================
-run_all() {
-	echo "====== Mesa Turnip Build Starting ======"
+mkdir -p "$(pwd)/turnip_workdir"
+cd "$(pwd)/turnip_workdir"
 
-	check_deps
-	prepare_workdir
+wget -O "ndk.tar.gz" "https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz"
+tar -xzvf ndk.tar.gz
+rm -rf "Mesa-android"
 
-	cd "$workdir/$srcfolder"
+git clone "https://gitlab.freedesktop.org/mesa/mesa.git" --depth=1 "Mesa-android"
+cd "$(pwd)/turnip_workdir/Mesa-android"
 
-	echo "Using hardcoded Mesa version: $MESA_VERSION"
-
-	apply_patches
-
-	build_lib_for_android
-}
-
-#========================
-# DEP CHECK
-#========================
-check_deps() {
-	deps_missing=0
-
-	for dep in $deps; do
-		if command -v "$dep" >/dev/null 2>&1; then
-			echo "✓ $dep"
-		else
-			echo "✗ missing: $dep"
-			deps_missing=1
-		fi
-	done
-
-	if [ "$deps_missing" -eq 1 ]; then
-		echo "Install missing dependencies first."
-		exit 1
-	fi
-
-	pip3 install --quiet mako || true
-}
-
-#========================
-# WORKSPACE
-#========================
-prepare_workdir() {
-	mkdir -p "$workdir"
-	cd "$workdir"
-
-	# ---- NDK ----
-	wget -O "ndk.tar.gz" \
-		"https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz"
-
-	echo "Extracting NDK..."
-	tar -xzvf ndk.tar.gz
-
-	# ---- Mesa ----
-	rm -rf "$srcfolder"
-
-	git clone \
-		"$mesasrc" \
-		--depth=1 \
-		"$srcfolder"
-}
-
-#========================
-# PATCHES
-#========================
-apply_patches() {
-	cd "$workdir/$srcfolder"
-
-	cat <<'PATCH_EOF' > 0001-freedreno-add-adreno-710-720-722.patch
+cat <<'PATCH_EOF' > 0001-freedreno-add-adreno-710-720-722.patch
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mesa Contributor <contributor@example.com>
 Date: Fri, 12 Jun 2026 00:00:00 +0000
 Subject: [PATCH] freedreno: add Adreno 710, 720, and 722 GPU entries
 
-Add support for Adreno 710 (FD710), 720 (FD720), and 722 (FD722) to
-freedreno_devices.py. Magic register values were derived from real
-blob command streams captured as .rd traces and decoded with cffdump.
-
-Chip IDs:
-  FD710: 0x07010000 / wildcard 0xffff07010000
-  FD720: 0x43020000 / wildcard 0xffff43020000
-  FD722: 0x43020100 / wildcard 0xffff43020100
-
-GMEM sizes (from KGSL_PROP_DEVICE_INFO):
-  FD710: 0x80000  (512 KiB)
-  FD720: 0x100000 (1 MiB)
-  FD722: 0x100000 (1 MiB)
-
-All three use CHIP.A7XX with the a7xx_base + a7xx_gen1 feature sets,
-3 CCUs, 32 VSC pipes, 32 KiB shared memory, wave_granularity=2, and
-fibers_per_sp = 128*2*16.
-
-Entries are inserted immediately before the FD725 block.
-
-Signed-off-by: Mesa Contributor <contributor@example.com>
----
 --- a/src/freedreno/common/freedreno_devices.py
 +++ b/src/freedreno/common/freedreno_devices.py
 @@ -962,6 +962,229 @@
          [A6XXRegs.REG_A6XX_UCHE_UNKNOWN_0E12, 0],
      ]
  
-+# BEGIN FD710_FD720_FD722_CUSTOM
-+
 +a710_magic_regs = dict(
 +        RB_DBG_ECO_CNTL = 0x00000000,
 +        RB_DBG_ECO_CNTL_blit = 0x00000000,
@@ -129,42 +35,34 @@ Signed-off-by: Mesa Contributor <contributor@example.com>
 +        [A6XXRegs.REG_A6XX_UCHE_CACHE_WAYS, 0x00040004],
 +        [A6XXRegs.REG_A6XX_TPL1_DBG_ECO_CNTL, 0x01000000],
 +        [A6XXRegs.REG_A6XX_TPL1_DBG_ECO_CNTL1, 0x00000700],
-+
 +        [A6XXRegs.REG_A6XX_SP_CHICKEN_BITS, 0x00000400],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_1, 0x00400400],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_2, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_3, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E10, 0x00000000],
 +        [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E11, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A6XX_SP_DBG_ECO_CNTL, 0x10000000],
-+
 +        [A6XXRegs.REG_A6XX_PC_MODE_CNTL, 0x00001f1f],
 +        [A6XXRegs.REG_A6XX_PC_DBG_ECO_CNTL, 0x20100000],
 +        [A6XXRegs.REG_A7XX_PC_UNKNOWN_9E24, 0x01fc7f00],
-+
 +        [A6XXRegs.REG_A7XX_VFD_DBG_ECO_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_ISDB_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AE6A, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_TIMEOUT_THRESHOLD_DP, 0x00000080],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL_1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_MODE_CNTL, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AB01, 0x00000001],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AB22, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_B310, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE2,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE2+1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE4,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE4+1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE6,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE6+1, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_GRAS_ROTATION_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A6XX_GRAS_DBG_ECO_CNTL,  0x00000800],
-+
 +        [A6XXRegs.REG_A7XX_RB_UNKNOWN_8E79, 0x00000000],
 +        [A6XXRegs.REG_A7XX_RB_LRZ_CNTL2, 0x00000000],
 +        [A6XXRegs.REG_A7XX_RB_CCU_DBG_ECO_CNTL, 0x00080000],
@@ -182,43 +80,35 @@ Signed-off-by: Mesa Contributor <contributor@example.com>
 +        [A6XXRegs.REG_A6XX_UCHE_CACHE_WAYS, 0x00040004],
 +        [A6XXRegs.REG_A6XX_TPL1_DBG_ECO_CNTL, 0x03000000],
 +        [A6XXRegs.REG_A6XX_TPL1_DBG_ECO_CNTL1, 0x00000700],
-+
 +        [A6XXRegs.REG_A6XX_SP_CHICKEN_BITS, 0x00001400],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_1, 0x01400400],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_2, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_3, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E10, 0x00000000],
 +        [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E11, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A6XX_SP_DBG_ECO_CNTL, 0x11000000],
-+
 +        [A6XXRegs.REG_A6XX_PC_MODE_CNTL, 0x00001f1f],
 +        [A6XXRegs.REG_A6XX_PC_DBG_ECO_CNTL, 0x20100000],
 +        [A6XXRegs.REG_A7XX_PC_UNKNOWN_9E24, 0x01fc7f00],
-+
 +        [A6XXRegs.REG_A7XX_VFD_DBG_ECO_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_ISDB_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AE6A, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_TIMEOUT_THRESHOLD_DP, 0x00000080],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL_1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_MODE_CNTL, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AB01, 0x00000001],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AB22, 0x00000000],
-+        [A6XXRegs.REG_A7XX_SP_UNKNOWN_B310, 0x00000000],
-+
++        [A7XXRegs.REG_A7XX_SP_UNKNOWN_B310, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE2,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE2+1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE4,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE4+1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE6,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE6+1, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_GRAS_ROTATION_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A6XX_GRAS_DBG_ECO_CNTL,  0x00000800],
-+
-+        [A6XXRegs.REG_A7XX_RB_UNKNOWN_8E79, 0x00000000],
++        [A7XXRegs.REG_A7XX_RB_UNKNOWN_8E79, 0x00000000],
 +        [A6XXRegs.REG_A7XX_RB_LRZ_CNTL2, 0x00000000],
 +        [A6XXRegs.REG_A7XX_RB_CCU_DBG_ECO_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A6XX_VPC_DBG_ECO_CNTL, 0x02000000],
@@ -235,43 +125,35 @@ Signed-off-by: Mesa Contributor <contributor@example.com>
 +        [A6XXRegs.REG_A6XX_UCHE_CACHE_WAYS, 0x00000000],
 +        [A6XXRegs.REG_A6XX_TPL1_DBG_ECO_CNTL, 0x03000000],
 +        [A6XXRegs.REG_A6XX_TPL1_DBG_ECO_CNTL1, 0x00000700],
-+
 +        [A6XXRegs.REG_A6XX_SP_CHICKEN_BITS, 0x00000400],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_1, 0x01400400],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_2, 0x00000010],
 +        [A6XXRegs.REG_A7XX_SP_CHICKEN_BITS_3, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E10, 0x00000000],
 +        [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E11, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A6XX_SP_DBG_ECO_CNTL, 0x11000000],
-+
 +        [A6XXRegs.REG_A6XX_PC_MODE_CNTL, 0x0000003f],
 +        [A6XXRegs.REG_A6XX_PC_DBG_ECO_CNTL, 0x20100000],
 +        [A6XXRegs.REG_A7XX_PC_UNKNOWN_9E24, 0x01fc7f00],
-+
 +        [A6XXRegs.REG_A7XX_VFD_DBG_ECO_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_ISDB_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AE6A, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_TIMEOUT_THRESHOLD_DP, 0x00000080],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL_1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_HLSQ_MODE_CNTL, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AB01, 0x00000001],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_AB22, 0x00000000],
-+        [A6XXRegs.REG_A7XX_SP_UNKNOWN_B310, 0x00000000],
-+
++        [A7XXRegs.REG_A7XX_SP_UNKNOWN_B310, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE2,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE2+1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE4,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE4+1, 0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE6,   0x00000000],
 +        [A6XXRegs.REG_A7XX_SP_UNKNOWN_0CE6+1, 0x00000000],
-+
 +        [A6XXRegs.REG_A7XX_GRAS_ROTATION_CNTL, 0x00000000],
 +        [A6XXRegs.REG_A6XX_GRAS_DBG_ECO_CNTL,  0x00000800],
-+
-+        [A6XXRegs.REG_A7XX_RB_UNKNOWN_8E79, 0x00000000],
++        [A7XXRegs.REG_A7XX_RB_UNKNOWN_8E79, 0x00000000],
 +        [A6XXRegs.REG_A7XX_RB_LRZ_CNTL2, 0x00000000],
 +        [A6XXRegs.REG_A7XX_RB_CCU_DBG_ECO_CNTL, 0x00080000],
 +        [A6XXRegs.REG_A6XX_VPC_DBG_ECO_CNTL, 0x02000000],
@@ -338,44 +220,24 @@ Signed-off-by: Mesa Contributor <contributor@example.com>
 +        raw_magic_regs = a722_raw_magic_regs,
 +    ))
 +
-+# END FD710_FD720_FD722_CUSTOM
-+
  add_gpus([
-         # These are named as Adreno730v3 or Adreno725v1.
          GPUId(chip_id=0x07030002, name="FD725"),
-
--- 
-2.45.0
 PATCH_EOF
 
-	echo "Applying patch..."
-	git apply 0001-freedreno-add-adreno-710-720-722.patch
+git apply 0001-freedreno-add-adreno-710-720-722.patch
+git add -A
 
-	echo "Staging changes..."
-	git add -A
-}
+echo '#define TUGEN8_DRV_VERSION "v26.2.0-V2.1"' > ./src/freedreno/vulkan/tu_version.h
 
-#========================
-# BUILD
-#========================
-build_lib_for_android() {
+export NDK="$(find "$(pwd)/../" -maxdepth 1 -type d -name "android-ndk-*" | head -n 1)/toolchains/llvm/prebuilt/linux-x86_64/bin"
 
-	cd "$workdir/$srcfolder"
+rm -rf build-android-aarch64
 
-	echo "#define TUGEN8_DRV_VERSION \"v$MESA_VERSION\"" \
-		> ./src/freedreno/vulkan/tu_version.h
-
-	# ---- dynamic NDK detection ----
-	NDK_DIR=$(find "$workdir" -maxdepth 1 -type d -name "android-ndk-*" | head -n 1)
-	export NDK="$NDK_DIR/toolchains/llvm/prebuilt/linux-x86_64/bin"
-
-	rm -rf build-android-aarch64
-
-	cat <<EOF > android-aarch64.txt
+cat <<EOF > android-aarch64.txt
 [binaries]
 ar = '$NDK/llvm-ar'
-c = '$NDK/aarch64-linux-android$sdkver-clang'
-cpp = ['$NDK/aarch64-linux-android$sdkver-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments']
+c = '$NDK/aarch64-linux-android35-clang'
+cpp = ['$NDK/aarch64-linux-android35-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments']
 c_ld = '$NDK/ld.lld'
 cpp_ld = '$NDK/ld.lld'
 strip = '$NDK/llvm-strip'
@@ -388,7 +250,7 @@ cpu = 'armv8'
 endian = 'little'
 EOF
 
-	cat <<EOF > native.txt
+cat <<EOF > native.txt
 [build_machine]
 c = 'clang'
 cpp = 'clang++'
@@ -402,35 +264,34 @@ cpu = 'armv8'
 endian = 'little'
 EOF
 
-	meson setup build-android-aarch64 \
-		--cross-file android-aarch64.txt \
-		--native-file native.txt \
-		--prefix /tmp/turnip \
-		-Dbuildtype=release \
-		-Dstrip=true \
-		-Dplatforms=android \
-		-Dplatform-sdk-version=$sdkver \
-		-Dandroid-stub=true \
-		-Dgallium-drivers= \
-		-Dvulkan-drivers=freedreno \
-		-Dvulkan-beta=true \
-		-Dfreedreno-kmds=kgsl \
-		-Degl=disabled \
-		-Dandroid-libbacktrace=disabled
+meson setup build-android-aarch64 \
+	--cross-file android-aarch64.txt \
+	--native-file native.txt \
+	--prefix /tmp/turnip \
+	-Dbuildtype=release \
+	-Dstrip=true \
+	-Dplatforms=android \
+	-Dplatform-sdk-version=35 \
+	-Dandroid-stub=true \
+	-Dgallium-drivers= \
+	-Dvulkan-drivers=freedreno \
+	-Dvulkan-beta=true \
+	-Dfreedreno-kmds=kgsl \
+	-Degl=disabled \
+	-Dandroid-libbacktrace=disabled
 
-	ninja -C build-android-aarch64 install
+ninja -C build-android-aarch64 install
+cd /tmp/turnip/lib
 
-	cd /tmp/turnip/lib
+patchelf --set-soname vulkan.ad07xx.so libvulkan_freedreno.so
+mv libvulkan_freedreno.so vulkan.ad07xx.so
 
-	patchelf --set-soname vulkan.ad07xx.so libvulkan_freedreno.so
-	mv libvulkan_freedreno.so vulkan.ad07xx.so
-
-	cat <<EOF > meta.json
+cat <<EOF > meta.json
 {
   "schemaVersion": 1,
-  "name": "Mesa Turnip v$MESA_VERSION",
+  "name": "Mesa Turnip v26.2.0-V2.1",
   "description": "Built from source",
-  "author": "$author",
+  "author": "JustCallMeJade",
   "packageVersion": "1",
   "vendor": "Mesa",
   "driverVersion": "Vulkan 1.4.335",
@@ -439,15 +300,4 @@ EOF
 }
 EOF
 
-	zip -9 "Turnip-v$MESA_VERSION.zip" \
-		vulkan.ad07xx.so \
-		meta.json
-
-	echo "================================="
-	echo "DONE"
-	echo "Version: $MESA_VERSION"
-	echo "Output: /tmp/turnip/lib/Turnip-v$MESA_VERSION.zip"
-	echo "================================="
-}
-
-run_all
+zip -9 "Turnip-v26.2.0-V2.1.zip" vulkan.ad07xx.so meta.json
