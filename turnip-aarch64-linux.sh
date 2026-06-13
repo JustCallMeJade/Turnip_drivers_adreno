@@ -11,7 +11,9 @@ PATCH_DOWNLOAD="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno
 OUTPUT_DIR="/root/turnip"
 NDK_NAME="android-ndk-r29-linux-aarch64.tar.gz"
 
-apt install $DEPS
+apt-get install $DEPS -y
+
+rm -rf $WORKDIR
 
 mkdir $WORKDIR
 
