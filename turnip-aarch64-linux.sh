@@ -100,6 +100,14 @@ meson setup build-android-aarch64 \
     -Degl=disabled \
     -Dandroid-libbacktrace=disabled
 
+wget https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/libarchive.patch
+
+git apply libarchive.patch
+
+git add -A
+
+git commit -m "Removed problematic file"
+
 ninja -C build-android-aarch64 -j5 install
 
 cd "$OUTPUT_DIR/lib"
