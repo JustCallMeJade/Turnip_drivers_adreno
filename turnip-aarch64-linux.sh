@@ -113,7 +113,7 @@ cat <<EOF > meta.json
 }
 EOF
 
-zip -9 "$OUTPUT_DIR/Turnip-v$MESA.zip" vulkan.ad07xx.so meta.json
+zip -9 "$OUTPUT_DIR/Turnip-v$MESA.zip" vulkan.adreno.so meta.json
 
 echo "Build complete."
 
