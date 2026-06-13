@@ -18,7 +18,7 @@ rm -rf Mesa-android
 
 git clone https://gitlab.freedesktop.org/mesa/mesa.git --depth=1 Mesa-Android
 
-cd Mesa-android
+cd Mesa-Android
 
 cat <<'PATCH_EOF' > patch.patch
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
@@ -280,7 +280,7 @@ EOF
 meson setup build-android-aarch64 \
 	--cross-file android-aarch64.txt \
 	--native-file native.txt \
-	--prefix /tmp/turnip \
+	--prefix /root/turnip \
 	-Dbuildtype=release \
 	-Dstrip=true \
 	-Dplatforms=android \
@@ -297,7 +297,7 @@ ninja -C build-android-aarch64 -j$(nproc)
 
 ninja -C build-android-aarch64 install 
 
-cd /tmp/turnip/lib
+cd /root/turnip/lib
 
 patchelf --set-soname vulkan.ad07xx.so libvulkan_freedreno.so
 
