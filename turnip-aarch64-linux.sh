@@ -17,16 +17,7 @@ apt-get build-dep mesa -y
 
 apt build-dep libarchive -y
 
-apt-get install -y 
-pkg-config 
-git 
-cmake 
-wget 
-zip 
-patchelf 
-libarchive-dev 
-expat 
-libxml2-dev
+apt-get install -y pkg-config git cmake wget zip patchelf libarchive-dev expat libxml2-dev
 
 rm -rf /root/r29
 rm -rf /root/mesa
