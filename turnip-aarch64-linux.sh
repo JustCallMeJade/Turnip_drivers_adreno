@@ -27,7 +27,7 @@ apt-get install -y \
     patchelf \
     libarchive-dev \
     expat \
-    libxml2
+    libxml2-dev
 
 rm -rf "$WORKDIR"
 
