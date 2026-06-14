@@ -16,6 +16,8 @@ apt-get update
 
 apt-get build-dep mesa -y
 
+apt build-dep libarchive -y
+
 apt-get install -y \
     pkg-config \
     git \
@@ -23,7 +25,9 @@ apt-get install -y \
     wget \
     zip \
     patchelf \
-    libarchive-dev
+    libarchive-dev \
+    expat \
+    libxml2
 
 rm -rf "$WORKDIR"
 
