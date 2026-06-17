@@ -93,8 +93,10 @@ meson setup build-android-aarch64 \
   -Dvulkan-beta=true \
   -Dfreedreno-kmds=kgsl \
   -Degl=disabled \
-  -Dandroid-libbacktrace=disabled
-ninja -C build-android-aarch64 -j4 install
+  -Dandroid-libbacktrace=disabled \
+  -Dzstd=disabled
+  
+ninja -C build-android-aarch64 -j5 install
 
 cd "$OUTPUT_DIR/lib"
 
