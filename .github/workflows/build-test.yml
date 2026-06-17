@@ -65,22 +65,40 @@ jobs:
           rm -rf build-android-aarch64
 
           cat <<EOF > android-aarch64.txt
-          [binaries]
-          ar = '$NDK/llvm-ar'
-          c = '$NDK/aarch64-linux-android35-clang'
-          cpp = ['$NDK/aarch64-linux-android35-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments']
-          c_ld = '$NDK/ld.lld'
-          cpp_ld = '$NDK/ld.lld'
-          strip = '$NDK/llvm-strip'
-          pkg-config = 'pkg-config'
+[binaries]
+ar = '$NDK/llvm-ar'
 
-          [host_machine]
-          system = 'android'
-          cpu_family = 'aarch64'
-          cpu = 'armv8'
-          endian = 'little'
-          EOF
+c = [
+  '$NDK/aarch64-linux-android35-clang',
+  '-fno-exceptions',
+  '-fno-unwind-tables',
+  '-fno-asynchronous-unwind-tables',
+  '--start-no-unused-arguments',
+  '-static-libstdc++',
+  '--end-no-unused-arguments'
+]
 
+cpp = [
+  '$NDK/aarch64-linux-android35-clang++',
+  '-fno-exceptions',
+  '-fno-unwind-tables',
+  '-fno-asynchronous-unwind-tables',
+  '--start-no-unused-arguments',
+  '-static-libstdc++',
+  '--end-no-unused-arguments'
+]
+
+c_ld = '$NDK/ld.lld'
+cpp_ld = '$NDK/ld.lld'
+strip = '$NDK/llvm-strip'
+pkg-config = 'pkg-config'
+
+[host_machine]
+system = 'android'
+cpu_family = 'aarch64'
+cpu = 'armv8'
+endian = 'little'
+EOF
           cat <<EOF > native.txt
           [build_machine]
           c = 'clang'
