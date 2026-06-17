@@ -1,5 +1,4 @@
-#!/bin/bash -e
-set -euo pipefail
+#!/bin/bash
 
 NDK="/root/r29/toolchains/llvm/prebuilt/linux-x86_64/bin"
 MESA="26.2.0-V3"
@@ -10,8 +9,6 @@ OUTPUT_DIR="/root/turnip"
 NDK_NAME="android-ndk-r29-linux-aarch64.tar.gz"
 
 sed -i '/^Types:/ s/deb/deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
-
-sed -i '/^Types:/ s/deb/deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
 apt-get update
 
