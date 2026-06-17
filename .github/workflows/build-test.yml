@@ -28,6 +28,8 @@ jobs:
             libarchive-dev \
             expat \
             libxml2-dev \
+            meson \
+            ninja-build \
             -qq
 
       - name: Download Android NDK
@@ -51,7 +53,6 @@ jobs:
           cd mesa
 
           wget -q "$PATCH_1"
-
           git apply patch.patch
 
           git config user.email "actions@github.com"
@@ -64,49 +65,51 @@ jobs:
 
           rm -rf build-android-aarch64
 
-          cat <<EOF > android-aarch64.txt
-[binaries]
-ar = '$NDK/llvm-ar'
+          cat > android-aarch64.txt <<EOF
+          [binaries]
+          ar = '$NDK/llvm-ar'
 
-c = [
-  '$NDK/aarch64-linux-android35-clang',
-  '-fno-exceptions',
-  '-fno-unwind-tables',
-  '-fno-asynchronous-unwind-tables',
-  '--start-no-unused-arguments',
-  '-static-libstdc++',
-  '--end-no-unused-arguments'
-]
+          c = [
+            '$NDK/aarch64-linux-android35-clang',
+            '-fno-exceptions',
+            '-fno-unwind-tables',
+            '-fno-asynchronous-unwind-tables',
+            '--start-no-unused-arguments',
+            '-static-libstdc++',
+            '--end-no-unused-arguments'
+          ]
 
-cpp = [
-  '$NDK/aarch64-linux-android35-clang++',
-  '-fno-exceptions',
-  '-fno-unwind-tables',
-  '-fno-asynchronous-unwind-tables',
-  '--start-no-unused-arguments',
-  '-static-libstdc++',
-  '--end-no-unused-arguments'
-]
+          cpp = [
+            '$NDK/aarch64-linux-android35-clang++',
+            '-fno-exceptions',
+            '-fno-unwind-tables',
+            '-fno-asynchronous-unwind-tables',
+            '--start-no-unused-arguments',
+            '-static-libstdc++',
+            '--end-no-unused-arguments'
+          ]
 
-c_ld = '$NDK/ld.lld'
-cpp_ld = '$NDK/ld.lld'
-strip = '$NDK/llvm-strip'
-pkg-config = 'pkg-config'
+          c_ld = '$NDK/ld.lld'
+          cpp_ld = '$NDK/ld.lld'
+          strip = '$NDK/llvm-strip'
+          pkgconfig = 'pkg-config'
 
-[host_machine]
-system = 'android'
-cpu_family = 'aarch64'
-cpu = 'armv8'
-endian = 'little'
-EOF
-          cat <<EOF > native.txt
-          [build_machine]
+          [host_machine]
+          system = 'android'
+          cpu_family = 'aarch64'
+          cpu = 'armv8'
+          endian = 'little'
+          EOF
+
+          cat > native.txt <<EOF
+          [binaries]
           c = 'clang'
           cpp = 'clang++'
           ar = 'llvm-ar'
           strip = 'llvm-strip'
           c_ld = 'ld.lld'
           cpp_ld = 'ld.lld'
+          pkgconfig = 'pkg-config'
 
           [host_machine]
           system = 'linux'
@@ -138,10 +141,9 @@ EOF
           cd "$OUTPUT_DIR/lib"
 
           patchelf --set-soname vulkan.adreno.so libvulkan_freedreno.so
-
           mv libvulkan_freedreno.so vulkan.adreno.so
 
-          cat <<EOF > meta.json
+          cat > meta.json <<EOF
           {
             "schemaVersion": 1,
             "name": "Mesa Turnip v$MESA",
