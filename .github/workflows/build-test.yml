@@ -67,7 +67,7 @@ jobs:
 
           cat > android-aarch64.txt <<EOF
           [binaries]
-          ar = 'llvm-ar'
+          ar = '$NDK/llvm-ar'
 
           c = ['ccache', '$NDK/aarch64-linux-android35-clang',
                '-fno-exceptions',
