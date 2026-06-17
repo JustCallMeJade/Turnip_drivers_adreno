@@ -131,8 +131,7 @@ jobs:
             -Dfreedreno-kmds=kgsl \
             -Degl=disabled \
             -Dandroid-libbacktrace=disabled \
-            -Dzstd=disabled \
-            -Dccache=enabled
+            -Dzstd=disabled
 
           ninja -C build-android-aarch64 -j$(nproc)
           ninja -C build-android-aarch64 install
