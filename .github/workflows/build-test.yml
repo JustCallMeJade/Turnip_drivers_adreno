@@ -21,16 +21,24 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y bash zip
+          apt-get install -y bash zip findutils
 
       - name: Run build script
         run: |
           chmod +x turnip-aarch64-linux.sh
           ./turnip-aarch64-linux.sh
 
-      - name: Upload generated ZIP files
+      - name: Debug output
+        run: |
+          echo "Where zip actually is:"
+          find / -name "*.zip" 2>/dev/null || true
+          echo "Workspace view:"
+          find . -name "*.zip" -print
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: turnip-build
-          path: "*.zip"
+          path: |
+            turnip_workdir/turnip/*.zip
           if-no-files-found: error
