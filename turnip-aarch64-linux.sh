@@ -4,7 +4,6 @@ set -euo pipefail
 
 workdir="$(pwd)/turnip_workdir"
 ndk="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/bin"
-sdkver="34"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
 BUILD_VERSION="26.2.0-V3"
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/patch.patch"
@@ -46,7 +45,6 @@ echo "Applying patch..."
 wget "$PATCH_1"
 git apply patch.patch
 git add -A
-git commit -m "Added patch"
 
 echo "Pushing TU_VERSION..."
 echo "#define TUGEN8_DRV_VERSION \"$BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
@@ -116,11 +114,9 @@ meson setup build-android-aarch64 \
     -Dvulkan-beta=true \
     -Dfreedreno-kmds=kgsl \
     -Degl=disabled \
-    -Dandroid-libbacktrace=disabled \
-    -Dzstd=disabled \
-    -Dspirv-tools=disabled
+    -Dandroid-libbacktrace=disabled
 
-ninja -C build-android-aarch64 -j5 install
+ninja -C build-android-aarch64 install
 
 cd "$workdir/turnip/lib"
 
