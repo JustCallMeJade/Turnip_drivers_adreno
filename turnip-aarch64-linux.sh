@@ -8,7 +8,6 @@ sdkver="34"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
 BUILD_VERSION="26.2.0-V3"
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/patch.patch"
-NDK_NAME="android-ndk-r29-linux-aarch64.tar.gz"
 
 echo "Only works in debian!!! press Ctrl + C to exit"
 
