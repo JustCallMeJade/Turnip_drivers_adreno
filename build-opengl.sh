@@ -53,8 +53,8 @@ export LDFLAGS="-fuse-ld=lld"
 cat <<EOF > android-aarch64.txt
 [binaries]
 ar = '$ndk/llvm-ar'
-c = ['$ndk/aarch64-linux-android27-clang', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
-cpp = ['$ndk/aarch64-linux-android27-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
+c = ['$ndk/aarch64-linux-android34-clang', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
+cpp = ['$ndk/aarch64-linux-android34-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
 c_ld = '$ndk/ld.lld'
 cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/llvm-strip'
@@ -94,7 +94,7 @@ meson setup build-android-aarch64 \
     -Dstrip=true \
     -Dplatforms=android \
     -Dvideo-codecs=all \
-    -Dplatform-sdk-version=27 \
+    -Dplatform-sdk-version=34 \
     -Dandroid-stub=true \
     -Dgallium-drivers=freedreno
     -Dfreedreno-kmds=kgsl \
@@ -116,7 +116,7 @@ cat <<EOF > meta.json
   "packageVersion": "1",
   "vendor": "Mesa3d",
   "driverVersion": "Vulkan 1.4.335",
-  "minApi": 28,
+  "minApi": 24,
   "libraryName": "libGLESv2.so"
 }
 EOF
