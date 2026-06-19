@@ -99,14 +99,12 @@ meson setup build-android-aarch64 \
     -Dgallium-drivers=freedreno
     -Dfreedreno-kmds=kgsl \
     -Degl=enabled \
-    -Dglesv2=enabled
+    -Dglesv2=enabled \
+    -Dllvm=disabled
 
 ninja -C build-android-aarch64 install
 
 cd "$workdir/turnip/lib"
-
-patchelf --set-soname vulkan.adreno.so libvulkan_freedreno.so
-mv libvulkan_freedreno.so vulkan.adreno.so
 
 cat <<EOF > meta.json
 {
