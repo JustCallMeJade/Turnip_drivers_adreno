@@ -123,7 +123,7 @@ cat <<EOF > meta.json
 }
 EOF
 
-zip -9 "$workdir/turnip/Turnip-v$BUILD_VERSION-vulkan.zip" vulkan.adreno.so meta.json
+zip -9 "$workdir/turnip/Turnip-v$BUILD_VERSION.zip" vulkan.adreno.so meta.json
 
 # ignore this. this is for github actions
 
