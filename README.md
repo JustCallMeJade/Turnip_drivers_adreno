@@ -26,6 +26,11 @@ Updates every Saturday
 
 
 
+![Screenshot](images/Screenshot_20260620_055546_com_winlator_cmod_XServerDisplayActivity.jpg)
+
+
+
+
 ## Credits
 
 
