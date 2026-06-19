@@ -98,7 +98,8 @@ meson setup build-android-aarch64 \
     -Dandroid-stub=true \
     -Dgallium-drivers=freedreno
     -Dfreedreno-kmds=kgsl \
-    -Degl=enabled
+    -Degl=enabled \
+    -Dglesv2=enabled
 
 ninja -C build-android-aarch64 install
 
