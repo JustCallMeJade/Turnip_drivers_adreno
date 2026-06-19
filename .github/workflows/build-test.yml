@@ -1,4 +1,4 @@
-name: Build Turnip
+name: Turnip adrenotools
 
 on:
   workflow_dispatch:
@@ -19,12 +19,11 @@ jobs:
 
       - name: Run build script
         run: |
-          chmod +x Actions-github.sh
-          ./Actions-github.sh
+          chmod +x Build-turnip.sh
+          ./Build-turnip.sh
 
       - name: Debug zip output
         run: |
-          echo "Searching for zip files..."
           find turnip_workdir -type f -name "*.zip" -print
 
       - name: Upload artifact
