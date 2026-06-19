@@ -128,7 +128,10 @@ zip -9 "$workdir/turnip/Turnip-v$BUILD_VERSION.zip" vulkan.adreno.so meta.json
 
 # ignore this. this is for github actions
 
-echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+-echo "BUILD_VERSION=$BUILD_VERSION" >> $GITHUB_ENV
++if [ -n "${GITHUB_ENV:-}" ]; then
++    echo "BUILD_VERSION=$BUILD_VERSION" >> "$GITHUB_ENV"
++fi
 
-echo "build complete."
-exit 0
+ echo "build complete."
+ exit 0
