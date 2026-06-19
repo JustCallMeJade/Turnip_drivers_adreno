@@ -10,6 +10,18 @@ Compiled on Termux Proot-distro
 
 Updates every Saturday
 
+
+
+# It works on winlator!
+
+
+
+
+![Screenshot](images/Screenshot_20260620_031535_com_winlator_XServerDisplayActivity.jpg)
+
+
+
+
 ## Credits
 
 
@@ -43,13 +55,6 @@ Gpu Patches And Hacks:  Vauzi
 
 
 710 / 720 / 722 / 725 / 720G / 730 / 740 / 750 / 752 / 760 / 780
-
-
-# 8XX:
-
-
-810 / 825 / 830 / 840
-
 
 
 
