@@ -58,7 +58,7 @@ cpp = ['$ndk/aarch64-linux-android34-clang++', '-fno-exceptions', '-fno-unwind-t
 c_ld = '$ndk/ld.lld'
 cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/llvm-strip'
-pkg-config = ['env', 'PKG_CONFIG_LIBDIR=$ndk/pkg-config', '/usr/bin/pkg-config']
+pkg-config = '/usr/bin/pkg-config'
 
 [host_machine]
 system = 'android'
