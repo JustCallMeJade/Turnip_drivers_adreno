@@ -38,9 +38,11 @@ cd mesa
 
 echo "Applying patch..."
 wget "$PATCH_1"
-wget "PATCH_2"
+wget "$PATCH_2"
 git apply patch.patch
 patch -p1 whitebelyash-patch-experimental.diff
+git add -A
+rm -f patch.patch && rm -f whitebelyash-patch-experimental.diff
 
 echo "#define TUGEN8_DRV_VERSION \"$BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 
