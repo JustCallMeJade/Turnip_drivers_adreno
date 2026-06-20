@@ -172,22 +172,6 @@ Description: Mesa Turnip Vulkan driver for Adreno GPUs
  Targets the KGSL kernel mode driver on Android/Linux aarch64.
 EOF
 
-# Generate DEBIAN/postinst to run ldconfig
-cat <<EOF > "$DEBIANDIR/postinst"
-#!/bin/sh
-set -e
-ldconfig
-EOF
-chmod 0755 "$DEBIANDIR/postinst"
-
-# Generate DEBIAN/postrm
-cat <<EOF > "$DEBIANDIR/postrm"
-#!/bin/sh
-set -e
-ldconfig
-EOF
-chmod 0755 "$DEBIANDIR/postrm"
-
 # Build the .deb
 dpkg-deb --root-owner-group -Zxz --build "$PKGDIR" "$workdir/turnip/mesa-turnip-adreno_${BUILD_VERSION}_aarch64.deb"
 
