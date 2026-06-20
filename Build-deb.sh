@@ -75,10 +75,10 @@ cpp = ['$ndk/aarch64-linux-android35-clang++', '-fno-exceptions', '-fno-unwind-t
 c_ld = '$ndk/ld.lld'
 cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/llvm-strip'
-pkg-config = ['env', 'PKG_CONFIG_LIBDIR=$ndk/pkg-config', '/usr/bin/pkg-config']
+pkg-config = '/usr/bin/pkg-config'
 
 [host_machine]
-system = 'android'
+system = 'linux'
 cpu_family = 'aarch64'
 cpu = 'armv8'
 endian = 'little'
@@ -116,7 +116,8 @@ meson setup build-android-aarch64 \
     -Dvulkan-drivers=freedreno \
     -Dvulkan-beta=true \
     -Dfreedreno-kmds=kgsl \
-    -Degl=disabled
+    -Degl=disabled \
+    -Dllvm=disabled
 
 echo "compiling mesa..."
 
