@@ -15,10 +15,10 @@ echo "Installing build dependencies..."
 sed -i '/^Types:/ s/deb$/deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
 apt-get update
-apt-get build-dep mesa -y -qq
-apt-get build-dep libarchive -y -qq
+apt-get build-dep mesa -y -qq > /dev/null 2>&1
+apt-get build-dep libarchive -y -qq > /dev/null 2>&1
 
-apt-get install -y pkg-config git cmake wget zip patchelf libclc-21-dev -qq
+apt-get install -y pkg-config git cmake wget zip patchelf libclc-21-dev -qq > /dev/null 2>&1
 
 echo "setting up workdir"
 
