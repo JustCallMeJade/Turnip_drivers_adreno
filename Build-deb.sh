@@ -136,6 +136,7 @@ PKGDIR="$workdir/deb_staging"
 LIBDIR="$PKGDIR/usr/lib"
 ICDDIR="$PKGDIR/usr/share/vulkan/icd.d"
 DEBIANDIR="$PKGDIR/DEBIAN"
+PREFIX="/data/data/com.termux/files"
 
 mkdir -p "$LIBDIR" "$ICDDIR" "$DEBIANDIR"
 
