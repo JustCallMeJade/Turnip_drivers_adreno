@@ -5,7 +5,7 @@ set -euo pipefail
 workdir="$(pwd)/turnip_workdir"
 ndk="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/bin"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
-BUILD_VERSION="26.2.0_V4"
+BUILD_VERSION="26.2.0-V4"
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/Gpu-Hacks.patch"
 PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/KGSL-hacks-whitebelyash.diff"
 
