@@ -118,7 +118,8 @@ meson setup build-android-aarch64 \
     -Dvulkan-beta=true \
     -Dfreedreno-kmds=kgsl \
     -Degl=disabled \
-    -Dandroid-strict=false
+    -Dandroid-strict=false \
+    -Dshader-cache=true
 
 echo "compiling mesa..."
 
