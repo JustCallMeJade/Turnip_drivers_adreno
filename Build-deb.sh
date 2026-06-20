@@ -132,9 +132,10 @@ patchelf --set-soname vulkan.adreno.so libvulkan_freedreno.so
 mv libvulkan_freedreno.so vulkan.adreno.so
 
 # Set up deb staging directory
+PREFIX="/data/data/com.termux/files"
 PKGDIR="$workdir/deb_staging"
-LIBDIR="$PKGDIR/usr/aarch64-linux-gnu/lib"
-ICDDIR="$PKGDIR/usr/share/vulkan/icd.d"
+LIBDIR="$PKGDIR/$PREFIX/usr/aarch64-linux-gnu/lib"
+ICDDIR="$PKGDIR/$PREFIX/usr/share/vulkan/icd.d"
 DEBIANDIR="$PKGDIR/DEBIAN"
 
 mkdir -p "$LIBDIR" "$ICDDIR" "$DEBIANDIR"
@@ -147,7 +148,7 @@ cat <<EOF > "$ICDDIR/freedreno_icd.aarch64.json"
 {
     "file_format_version": "1.0.0",
     "ICD": {
-        "library_path": "/usr/aarch64-linux-gnu/lib/vulkan.adreno.so",
+        "library_path": "$PREFIX/usr/aarch64-linux-gnu/lib/vulkan.adreno.so",
         "api_version": "1.4.335"
     }
 }
@@ -163,7 +164,7 @@ Version: $BUILD_VERSION
 Architecture: aarch64
 Maintainer: JustCallMeJade
 Installed-Size: $INSTALLED_SIZE
-Depends: vulkan-loader vulkan-icd
+Depends: mesa
 Section: libs
 Priority: optional
 Description: Mesa Turnip Vulkan driver for Adreno GPUs
