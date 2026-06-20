@@ -35,13 +35,18 @@ tar -xzf android-ndk-r29-linux-aarch64.tar.gz
 git clone $mesasrc --depth=1
 cd mesa
 
+wget https://raw.githubusercontent.com/whitebelyash/mesa-unified/main/src/freedreno/common/freedreno_devices.py
+
+rm -f src/freedreno/common/freedreno_devices.py
+
+mv freedreno_devices.py src/freedreno/common
+
 echo "Applying patch..."
 wget "$PATCH_1"
 wget "$PATCH_2"
 git apply Gpu-Hacks.patch
 patch -p1 KGSL-hacks-whitebelyash.diff
 git add -A
-rm -f patch.patch && rm -f KGSL-hacks-whitebelyash.diff
 
 echo "#define TUGEN8_DRV_VERSION \"$BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 
