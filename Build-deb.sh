@@ -111,14 +111,12 @@ meson setup build-android-aarch64 \
     -Dstrip=true \
     -Dplatforms=x11 \
     -Dvideo-codecs=all \
-    -Dplatform-sdk-version=35 \
-    -Dandroid-stub=true \
+    -Dandroid-stub=true
     -Dgallium-drivers= \
     -Dvulkan-drivers=freedreno \
     -Dvulkan-beta=true \
     -Dfreedreno-kmds=kgsl \
-    -Degl=disabled \
-    -Dandroid-strict=false
+    -Degl=disabled
 
 echo "compiling mesa..."
 
