@@ -132,11 +132,11 @@ patchelf --set-soname vulkan.adreno.so libvulkan_freedreno.so
 mv libvulkan_freedreno.so vulkan.adreno.so
 
 # Set up deb staging directory
-PKGDIR="$workdir/deb_staging"
-LIBDIR="$PKGDIR/usr/lib"
-ICDDIR="$PKGDIR/usr/share/vulkan/icd.d"
-DEBIANDIR="$PKGDIR/DEBIAN"
 PREFIX="/data/data/com.termux/files"
+PKGDIR="$workdir/deb_staging"
+LIBDIR="$PKGDIR/$PREFIX/usr/lib"
+ICDDIR="$PKGDIR/$PREFIX/usr/share/vulkan/icd.d"
+DEBIANDIR="$PKGDIR/DEBIAN"
 
 mkdir -p "$LIBDIR" "$ICDDIR" "$DEBIANDIR"
 
