@@ -60,7 +60,7 @@ jobs:
           rm -rf r29 mesa
           rm -f android-ndk-r29-linux-aarch64.tar.gz
 
-          wget https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz
+          wget -q -nv https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz
           tar -xzf android-ndk-r29-linux-aarch64.tar.gz
 
           ndk="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/bin"
