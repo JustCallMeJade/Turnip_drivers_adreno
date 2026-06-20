@@ -12,13 +12,12 @@ PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/K
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
 
-sed -i '/^Types:/ s/deb$/deb deb-src/' /etc/apt/sources.list.d/debian.sources
+pkg update && pkg upgrade -y
+pkg install x11-repo
+pkg install mesa libx11 python cmake clang git wget ninja
+pip install mako meson setuptools pyyaml
 
-apt-get update
-apt-get build-dep mesa -y -qq
-apt-get build-dep libarchive -y -qq
-
-apt-get install -y pkg-config git cmake wget zip patchelf libclc-21-dev -qq
+pkg install -y pkg-config git cmake wget zip patchelf libclc glslang -qq
 
 echo "setting up workdir"
 
@@ -30,11 +29,6 @@ mkdir -p "$workdir/turnip"
 rm -rf "$workdir/r29"
 rm -rf "$workdir/mesa"
 rm -f "$workdir/android-ndk-r29-linux-aarch64.tar.gz"
-
-echo "installing NDK and Cloning Mesa's latest source"
-
-wget -q -nv https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz
-tar -xzf android-ndk-r29-linux-aarch64.tar.gz
 
 git clone $mesasrc --depth=1
 cd mesa
@@ -67,51 +61,13 @@ export LDFLAGS="-fuse-ld=lld"
 
 echo "setting crossfiles and setting up mesa..."
 
-cat <<EOF > android-aarch64.txt
-[binaries]
-ar = '$ndk/llvm-ar'
-c = ['$ndk/aarch64-linux-android35-clang', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
-cpp = ['$ndk/aarch64-linux-android35-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
-c_ld = '$ndk/ld.lld'
-cpp_ld = '$ndk/ld.lld'
-strip = '$ndk/llvm-strip'
-pkg-config = '/usr/bin/pkg-config'
-
-[host_machine]
-system = 'linux'
-cpu_family = 'aarch64'
-cpu = 'armv8'
-endian = 'little'
-EOF
-
-cat <<EOF > native.txt
-[binaries]
-c = '/usr/bin/clang'
-cpp = '/usr/bin/clang++'
-ar = '/usr/bin/llvm-ar'
-strip = '/usr/bin/llvm-strip'
-c_ld = 'ld.lld'
-cpp_ld = 'ld.lld'
-pkg-config = '/usr/bin/pkg-config'
-
-[build_machine]
-system = 'linux'
-cpu_family = 'aarch64'
-cpu = 'armv8'
-endian = 'little'
-EOF
-
 rm -rf build-android-aarch64
 
 meson setup build-android-aarch64 \
-    --cross-file android-aarch64.txt \
-    --native-file native.txt \
     --prefix "$workdir/turnip" \
     -Dbuildtype=debugoptimized \
-    -Dstrip=true \
     -Dplatforms=x11 \
     -Dvideo-codecs=all \
-    -Dandroid-stub=true
     -Dgallium-drivers= \
     -Dvulkan-drivers=freedreno \
     -Dvulkan-beta=true \
