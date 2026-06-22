@@ -9,6 +9,7 @@ mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
 BUILD_VERSION="26.2.0-V4.1"
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/Gpu-Hacks.patch"
 PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/KGSL-hacks-whitebelyash.diff"
+PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
 
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
@@ -50,7 +51,10 @@ mv freedreno_devices.py src/freedreno/common
 
 wget "$PATCH_1"
 wget "$PATCH_2"
+wget "$PATCH_3"
+
 git apply Gpu-Hacks.patch
+patch -p1 -i 0a60c9c4108200fda20016b594dcf8806f29a28e.diff
 patch -p1 -i KGSL-hacks-whitebelyash.diff
 git add -A
 
