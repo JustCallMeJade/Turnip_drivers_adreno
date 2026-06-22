@@ -80,7 +80,7 @@ cpp = ['$ndk/aarch64-linux-android35-clang++', '--sysroot=$sysroot', '-fno-excep
 c_ld = '$ndk/ld.lld'
 cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/llvm-strip'
-pkg-config = ['env', 'PKG_CONFIG_LIBDIR=$sysroot/usr/lib/pkgconfig', 'PKG_CONFIG_SYSROOT_DIR=$sysroot', '/usr/bin/pkg-config']
+pkg-config = ['env', 'PKG_CONFIG_LIBDIR=$sysroot/usr/lib/pkg-config', 'PKG_CONFIG_SYSROOT_DIR=$sysroot', '/usr/bin/pkg-config']
 
 [built-in options]
 c_args = ['--sysroot=$sysroot']
