@@ -13,7 +13,7 @@ PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/K
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
 
-sed -i '/^Types:/ s/deb$/deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
+sed -i '/^Types:/ s/deb$/deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
 apt-get update
 apt-get build-dep mesa -y -qq > /dev/null 2>&1
