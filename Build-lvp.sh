@@ -59,6 +59,7 @@ cpp = ['$ndk/aarch64-linux-android35-clang++', '--sysroot=$sysroot', '-fno-excep
 c_ld = '$ndk/ld.lld'
 cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/llvm-strip'
+llvm-config = 'llvm-config'
 pkg-config = ['env', 'PKG_CONFIG_LIBDIR=$ndk/pkg-config', 'pkg-config']
 
 [built-in options]
@@ -95,7 +96,7 @@ endian = 'little'
 EOF
 
 rm -rf build-android-aarch64
-
+  
 meson setup build-android-aarch64 \
     --cross-file android-aarch64.txt \
     --native-file native.txt \
