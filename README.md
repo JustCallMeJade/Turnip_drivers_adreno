@@ -64,7 +64,7 @@ https://github.com/Vauzi-17
 
 # 8XX
 
-810 / 820 / 829 / 830 / 840
+810 / 829 / 830 / 840
 
 (8XX now supported yayaya!!)
 
