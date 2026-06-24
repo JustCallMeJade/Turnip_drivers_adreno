@@ -1,3 +1,5 @@
+name: Turnip adrenotools
+
 on:
   workflow_dispatch:
 
