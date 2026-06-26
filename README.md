@@ -1,5 +1,5 @@
-# Info
-Turnip drivers compiled from source for Android Emulators
+#### Info
+**Turnip drivers compiled from source for Android Emulators**
 
 
 
@@ -66,7 +66,6 @@ https://github.com/Vauzi-17
 
 **810 / 829 / 830 / 840**
 
-(8XX now supported yayaya!!)
 
 
 
