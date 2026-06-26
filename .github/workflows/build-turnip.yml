@@ -39,6 +39,12 @@ jobs:
         with:
           tag_name: v${{ env.BUILD_VERSION }}
           name: v${{ env.BUILD_VERSION }}
+          body: |
+            ## GPU Support
+
+            - **6xx**: Any. Supported by upstream Turnip.
+            - **7xx**: Any. Supported by upstream Turnip and a couple of hacks.
+            - **8xx**: 810 / 829 / 830 / 840. Supported by upstream Turnip (originally by patches).
           files: turnip_workdir/turnip/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
