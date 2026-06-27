@@ -44,14 +44,16 @@ cat <<EOF > VERSION
 26.2.0-$VERSION
 EOF
 
-wget "$PATCH_1"
-wget "$PATCH_2"
-wget "$PATCH_3"
-wget "$PATCH_4"
-wget "$PATCH_5"
-wget "$PATCH_6"
-wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.diff
-wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/35924.diff
+for patch in \
+"$PATCH_1" \
+"$PATCH_2" \
+"$PATCH_3" \
+"$PATCH_4" \
+"$PATCH_5" \
+"$PATCH_6"
+do
+    wget "$patch"
+done
 
 git apply Gpu-Hacks.patch
 patch -p1 -i 0a60c9c4108200fda20016b594dcf8806f29a28e.diff
