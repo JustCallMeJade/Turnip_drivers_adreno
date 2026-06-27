@@ -86,6 +86,9 @@ cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/llvm-strip'
 pkg-config = ['env', 'PKG_CONFIG_LIBDIR=$sysroot/usr/lib/pkg-config', 'PKG_CONFIG_SYSROOT_DIR=$sysroot', '/usr/bin/pkg-config']
 
+[properties]
+sys_root=$workdir/r29
+
 [built-in options]
 c_args = ['--sysroot=$sysroot', '-Wno-error']
 cpp_args = ['--sysroot=$sysroot']
