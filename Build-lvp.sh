@@ -40,6 +40,7 @@ tar -xzf android-ndk-r29-linux-aarch64.tar.gz
 git clone $mesasrc --depth=1
 cd mesa
 
+export PATH="$PATH"
 export CC=clang
 export CXX=clang++
 export AR=llvm-ar
@@ -53,7 +54,6 @@ echo "setting crossfiles and setting up mesa..."
 
 cat <<EOF > android-aarch64.txt
 [binaries]
-ar = 'llvm-ar'
 c = ['$ndk/aarch64-linux-android35-clang', '--sysroot=$sysroot', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
 cpp = ['$ndk/aarch64-linux-android35-clang++', '--sysroot=$sysroot', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
 c_ld = 'lld'
@@ -73,7 +73,6 @@ cat <<EOF > native.txt
 [binaries]
 c = 'clang'
 cpp = 'clang++'
-ar = 'llvm-ar'
 strip = 'llvm-strip'
 c_ld = 'lld'
 cpp_ld = 'lld'
