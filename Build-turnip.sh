@@ -4,8 +4,7 @@ workdir="$(pwd)/turnip_workdir"
 ndk="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/bin" #yes r29 is the directory
 sysroot="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
-BUILD_VERSION="26.2.0-V6.1" #this script is always maintained just update when new version.
-VERSION="V6.1"
+VERSION="$(cat VERSION)"
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/Gpu-Hacks.patch"
 PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/KGSL-hacks-whitebelyash.diff"
 PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
@@ -44,9 +43,7 @@ cd mesa
 
 rm -f VERSION
 
-cat <<EOF > VERSION
-26.2.0-$VERSION
-EOF
+wget https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/VERSION
 
 for patch in \
 "$PATCH_1" \
@@ -75,7 +72,7 @@ patch -p1 -i 42498.patch
 patch -p1 -i 42159.patch
 git add -A
 
-echo "#define TUGEN8_DRV_VERSION \"$BUILD_VERSION\"" > ./src/freedreno/vulkan/tu_version.h
+echo "#define TUGEN8_DRV_VERSION \"$VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 
 export CC=clang
 export CXX=clang++
@@ -156,7 +153,7 @@ mv libvulkan_freedreno.so vulkan.adreno.so
 cat <<EOF > meta.json
 {
   "schemaVersion": 1,
-  "name": "Mesa Turnip v$BUILD_VERSION",
+  "name": "Mesa Turnip v$VERSION",
   "description": "Built from Mesa source + GPU hacks",
   "author": "JustCallMeJade",
   "packageVersion": "1",
@@ -170,7 +167,7 @@ EOF
 zip -9 "$workdir/turnip/Turnip-v$BUILD_VERSION.zip" vulkan.adreno.so meta.json
 
 if [ "$GITHUB_ACTIONS" = "true" ]; then
-    echo "BUILD_VERSION=$BUILD_VERSION" >> "$GITHUB_ENV"
+    echo "VERSION=$BUILD_VERSION" >> "$GITHUB_ENV"
 fi
 
 echo "build complete."
