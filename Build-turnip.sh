@@ -13,7 +13,7 @@ PATCH_6="https://github.com/lfdevs/mesa-for-android-container/commit/b23ef04b8e9
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
 PATCH_8="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42498.patch"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
-VERSIION_GITHUB="26.20-v7.0-1"
+VERSION_GITHUB="26.20-v7.0-1"
 
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
