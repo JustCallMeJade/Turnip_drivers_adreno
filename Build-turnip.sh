@@ -4,7 +4,6 @@ workdir="$(pwd)/turnip_workdir"
 ndk="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/bin" #yes r29 is the directory
 sysroot="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
-VERSION="$(cat $workdir/mesa/VERSION)"
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/Gpu-Hacks.patch"
 PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/KGSL-hacks-whitebelyash.diff"
 PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
@@ -44,6 +43,8 @@ cd mesa
 rm -f VERSION
 
 wget https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/VERSION
+
+export VERSION="$(cat $workdir/mesa/VERSION)"
 
 for patch in \
 "$PATCH_1" \
@@ -98,6 +99,9 @@ c_args = ['--sysroot=$sysroot', '-Wno-error']
 cpp_args = ['--sysroot=$sysroot']
 c_link_args = ['--sysroot=$sysroot']
 cpp_link_args = ['--sysroot=$sysroot']
+
+[properties]
+sys_root = '$sysroot'
 
 [host_machine]
 system = 'android'
