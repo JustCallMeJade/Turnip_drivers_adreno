@@ -34,7 +34,7 @@ jobs:
           if-no-files-found: error
 
       - name: Create GitHub Release
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/Turnip_basic'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.BUILD_VERSION }}
