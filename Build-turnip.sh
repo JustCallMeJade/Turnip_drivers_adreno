@@ -13,6 +13,7 @@ PATCH_6="https://github.com/lfdevs/mesa-for-android-container/commit/b23ef04b8e9
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
 PATCH_8="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42498.patch"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
+PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
 VERSION_GITHUB="26.20-v7.0-1"
 
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
@@ -56,7 +57,8 @@ for patch in \
 "$PATCH_6" \
 "$PATCH_7" \
 "$PATCH_8" \
-"$PATCH_9"
+"$PATCH_9" \
+"$PATCH_10"
 do
     wget "$patch"
 done
@@ -72,6 +74,7 @@ patch -p1 -i b23ef04b8e95e04ae4c77bb8c0bdcdcc97f813d7.diff
 patch -p1 -i 40159.diff
 patch -p1 -i 42498.patch
 patch -p1 -i 42159.patch
+git apply 42489.patch
 git add -A
 
 	echo "#define TUGEN8_DRV_VERSION \"v$VERSION\"" > ./src/freedreno/vulkan/tu_version.h
