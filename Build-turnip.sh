@@ -87,7 +87,7 @@ meson setup build-android-aarch64 \
     --native-file native.txt \
     --prefix "$workdir/turnip" \
     -Dbuildtype=release \
-    -Dplatforms=android
+    -Dplatforms=android \
     -Dplatform-sdk-version=35 \
     -Dandroid-stub=true \
     -Dgallium-drivers= \
