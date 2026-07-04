@@ -143,12 +143,14 @@ meson setup build-android-aarch64 \
     -Dvideo-codecs=all \
     -Dplatform-sdk-version=35 \
     -Dandroid-stub=true \
-    -Dgallium-drivers= \
+    -Dgallium-drivers=zink \
     -Dvulkan-drivers=freedreno \
     -Dvulkan-beta=true \
     -Dfreedreno-kmds=kgsl \
-    -Degl=disabled \
-    -Dandroid-strict=false
+    -Degl=enabled \
+	-Dgles2=enabled \
+    -Dandroid-strict=false \
+	-Dallow-fallback-for=libdrm
 
 ninja -C build-android-aarch64 install
 
@@ -163,7 +165,7 @@ cat <<EOF > meta.json
 {
   "schemaVersion": 1,
   "name": "Mesa Turnip v$VERSION",
-  "description": "Built from Mesa source + GPU hacks",
+  "description": "Built from Mesa source + GPU hacks + Zink",
   "author": "JustCallMeJade",
   "packageVersion": "1",
   "vendor": "Mesa3D",
@@ -173,8 +175,7 @@ cat <<EOF > meta.json
 }
 EOF
 
-zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json
-
+zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json libGLESv2.so libEGL.so libgallium_dri.so
 if [ "$GITHUB_ACTIONS" = "true" ]; then
     echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
 fi
