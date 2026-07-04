@@ -171,7 +171,12 @@ cat <<EOF > meta.json
   "vendor": "Mesa3D",
   "driverVersion": "Vulkan 1.4.354",
   "minApi": 28,
-  "libraryName": "vulkan.adreno.so"
+  "libraryName": [
+    "vulkan.adreno.so",
+    "libGLESv2.so",
+    "libEGL.so",
+    "libgallium_dri.so"
+  ]
 }
 EOF
 
