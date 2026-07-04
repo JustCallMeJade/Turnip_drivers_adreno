@@ -143,7 +143,7 @@ meson setup build-android-aarch64 \
     -Dvideo-codecs=all \
     -Dplatform-sdk-version=35 \
     -Dandroid-stub=true \
-    -Dgallium-drivers=zink \
+    -Dgallium-drivers=zink,freedreno \
     -Dvulkan-drivers=freedreno \
     -Dvulkan-beta=true \
     -Dfreedreno-kmds=kgsl \
