@@ -150,7 +150,8 @@ meson setup build-android-aarch64 \
     -Degl=enabled \
 	-Dgles2=enabled \
     -Dandroid-strict=false \
-	-Dallow-fallback-for=libdrm
+	-Dallow-fallback-for=libdrm \
+	-Degl-native-platform=android
 
 ninja -C build-android-aarch64 install
 
