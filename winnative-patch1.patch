@@ -1,0 +1,18 @@
+--- a/src/util/u_gralloc/u_gralloc_fallback.c
++++ b/src/util/u_gralloc/u_gralloc_fallback.c
+@@ -148,9 +148,12 @@ fallback_gralloc_get_buffer_info(struct u_gralloc *gralloc,
+    out->strides[0] = stride;
+ 
+ #ifdef HAS_FREEDRENO
+-   uint32_t gmsm = ('g' << 24) | ('m' << 16) | ('s' << 8) | 'm';
+-   if (hnd->handle->numInts >= 2 && hnd->handle->data[hnd->handle->numFds] == gmsm) {
+-      /* This UBWC flag was introduced in a5xx. */
++   /* UBWC flag detection - bypass legacy gmsm magic check for A8XX/A840.
++    * Newer Qualcomm gralloc no longer writes the 'gmsm' header.
++    * Without this fix, UBWC buffers are treated as linear -> horizontal lines.
++    */
++   /* This UBWC flag was introduced in a5xx. */
++   if (hnd->handle->numInts >= 2) {
+       bool ubwc = hnd->handle->data[hnd->handle->numFds + 1] & 0x08000000;
+       out->modifier = ubwc ? DRM_FORMAT_MOD_QCOM_COMPRESSED : DRM_FORMAT_MOD_LINEAR;
+    }
