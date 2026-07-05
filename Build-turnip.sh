@@ -61,7 +61,9 @@ for patch in \
 "$PATCH_7" \
 "$PATCH_8" \
 "$PATCH_9" \
-"$PATCH_10"
+"$PATCH_10" \
+"$PATCH_11" \
+"$PATCH_12"
 do
     wget "$patch"
 done
@@ -84,6 +86,13 @@ do
     echo "Applying $patch..."
     git apply "$patch"
 done
+
+for patch in \
+apply_perf_variant.py \
+disable_64b_image_atomics.py
+do
+ ./"$patch"
+ done
 
 git add -A
 
