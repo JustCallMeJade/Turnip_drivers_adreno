@@ -4,6 +4,7 @@ workdir="$(pwd)/turnip_workdir"
 ndk="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/bin" #yes r29 is the directory
 sysroot="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
+
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/Gpu-Hacks.patch"
 PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/KGSL-hacks-whitebelyash.diff"
 PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
@@ -16,6 +17,10 @@ PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
 PATCH_11="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_perf_variant.py"
 PATCH_12="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/disable_64b_image_atomics.py"
+PATCH_13="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/fix_gralloc_flushall.py"
+PATCH_14="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_a7xx_gen2_ubwc_hint.py"
+PATCH_15="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_balance_variant.py"
+
 VERSION_GITHUB="26.20-v7.0-1"
 BUILD_VARIANT="p2"
 
@@ -63,7 +68,10 @@ for patch in \
 "$PATCH_9" \
 "$PATCH_10" \
 "$PATCH_11" \
-"$PATCH_12"
+"$PATCH_12" \
+"$PATCH_13" \
+"$PATCH_14" \
+"$PATCH_15"
 do
     wget "$patch"
 done
@@ -89,7 +97,10 @@ done
 
 for patch in \
 apply_perf_variant.py \
-disable_64b_image_atomics.py
+disable_64b_image_atomics.py \
+fix_gralloc_flushall.py \
+apply_a7xx_gen2_ubwc_hint.py \
+apply_balance_variant.py
 do
  ./"$patch"
  done
