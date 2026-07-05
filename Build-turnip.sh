@@ -66,15 +66,22 @@ done
 wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.diff
 wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/35924.diff
 
-git apply Gpu-Hacks.patch
-patch -p1 -i 0a60c9c4108200fda20016b594dcf8806f29a28e.diff
-patch -p1 -i 4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff
-patch -p1 -i 216d25275a57bc543944eb369a4e31ce3733a9a1.diff
-patch -p1 -i b23ef04b8e95e04ae4c77bb8c0bdcdcc97f813d7.diff
-patch -p1 -i 40159.diff
-patch -p1 -i 42498.patch
-patch -p1 -i 42159.patch
-git apply 42489.patch
+for patch in \
+    Gpu-Hacks.patch \
+    KGSL-hacks-whitebelyash.diff \
+    0a60c9c4108200fda20016b594dcf8806f29a28e.diff \
+    4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff \
+    216d25275a57bc543944eb369a4e31ce3733a9a1.diff \
+    b23ef04b8e95e04ae4c77bb8c0bdcdcc97f813d7.diff \
+    40159.diff \
+    42498.patch \
+    42159.patch \
+    42489.patch
+do
+    echo "Applying $patch..."
+    git apply "$patch"
+done
+
 git add -A
 
 	echo "#define TUGEN8_DRV_VERSION \"v$VERSION\"" > ./src/freedreno/vulkan/tu_version.h
