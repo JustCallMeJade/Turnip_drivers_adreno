@@ -51,6 +51,9 @@ https://github.com/Vauzi-17
 
 
 
+**Misc patches:**
+https://github.com/WinNative-Emu
+
 ## Supported GPUs (6xx supported any)
 
 
