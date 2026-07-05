@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 workdir="$(pwd)/turnip_workdir"
 ndk="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/bin" #yes r29 is the directory
@@ -182,7 +182,7 @@ cat <<EOF > meta.json
 }
 EOF
 
-zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json libGLESv2.so libEGL.so libgallium_dri.so
+zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json libGLESv2.so libEGL.so libgallium_dri.so libGLESv1_CM.so
 if [ "$GITHUB_ACTIONS" = "true" ]; then
     echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
 fi
