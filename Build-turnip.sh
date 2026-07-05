@@ -15,6 +15,7 @@ PATCH_8="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42498.patch"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
 VERSION_GITHUB="26.20-v7.0-1"
+BUILD_VARIANT="p2"
 
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
