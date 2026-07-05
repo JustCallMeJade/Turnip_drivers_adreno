@@ -14,6 +14,8 @@ PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/
 PATCH_8="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42498.patch"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
+PATCH_11="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_perf_variant.py"
+PATCH_12="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/disable_64b_image_atomics.py"
 VERSION_GITHUB="26.20-v7.0-1"
 BUILD_VARIANT="p2"
 
