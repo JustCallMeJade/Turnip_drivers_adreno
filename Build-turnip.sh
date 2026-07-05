@@ -187,4 +187,7 @@ if [ "$GITHUB_ACTIONS" = "true" ]; then
 fi
 
 echo "build complete."
+
+ls # random ignore this
+
 exit 0
