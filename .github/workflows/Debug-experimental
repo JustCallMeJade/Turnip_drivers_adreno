@@ -1,4 +1,4 @@
-name: Turnip adrenotools
+name: Turnip experimental build 
 
 on:
  workflow_dispatch:
