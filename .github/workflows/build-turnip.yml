@@ -50,6 +50,7 @@ jobs:
             ## Thanks ❤️
 
             - **Whitebelyash**
+            - **Vauzi-17**
             - **Winnative-devs**
             
           files: turnip_workdir/turnip/*.zip
