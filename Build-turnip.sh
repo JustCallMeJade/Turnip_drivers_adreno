@@ -176,6 +176,7 @@ cat <<EOF > meta.json
     "vulkan.adreno.so",
     "libGLESv2.so",
     "libEGL.so",
+	"libGLESv1_CM.so",
     "libgallium_dri.so"
   ]
 }
