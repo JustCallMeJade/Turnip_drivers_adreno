@@ -9,6 +9,7 @@ PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/G
 PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/KGSL-hacks-whitebelyash.diff"
 PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
 PATCH_4="https://github.com/lfdevs/mesa-for-android-container/commit/4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff"
+PATCH_5="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/39751.patch"
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
 PATCH_8="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42498.patch"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
@@ -59,6 +60,7 @@ for patch in \
 "$PATCH_2" \
 "$PATCH_3" \
 "$PATCH_4" \
+"$PATCH_5" \
 "$PATCH_7" \
 "$PATCH_8" \
 "$PATCH_9" \
@@ -84,7 +86,8 @@ KGSL-hacks-whitebelyash.diff \
 40159.diff \
 42498.patch \
 42159.patch \
-42489.patch
+42489.patch \
+39751.patch
 do
 echo "Applying $patch..."
 git apply "$patch"
