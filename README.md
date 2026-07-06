@@ -41,7 +41,7 @@ https://github.com/SnowNF/ndk-aarch64-linux
 
 
 
-**Script (Modified) and KGSL patch And 8xx support:**
+**Script (Modified) and 8xx support:**
 https://github.com/whitebelyash
 
 
