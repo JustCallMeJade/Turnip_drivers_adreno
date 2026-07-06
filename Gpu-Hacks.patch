@@ -25,9 +25,12 @@ Entries are inserted immediately before the FD725 block.
 
 Signed-off-by: Mesa Contributor <contributor@example.com>
 ---
+ src/freedreno/common/freedreno_devices.py | 223 +++++++++++++++++++++
+ 1 file changed, 223 insertions(+)
+
 --- a/src/freedreno/common/freedreno_devices.py
 +++ b/src/freedreno/common/freedreno_devices.py
-@@ -962,6 +962,229 @@
+@@ -986,6 +986,229 @@
          [A6XXRegs.REG_A6XX_UCHE_UNKNOWN_0E12, 0],
      ]
  
@@ -257,6 +260,5 @@ Signed-off-by: Mesa Contributor <contributor@example.com>
  add_gpus([
          # These are named as Adreno730v3 or Adreno725v1.
          GPUId(chip_id=0x07030002, name="FD725"),
-
 -- 
 2.45.0
