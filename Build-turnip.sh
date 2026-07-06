@@ -8,9 +8,7 @@ mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/Gpu-Hacks.patch"
 PATCH_2="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/KGSL-hacks-whitebelyash.diff"
 PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
-PATCH_5="https://github.com/lfdevs/mesa-for-android-container/commit/216d25275a57bc543944eb369a4e31ce3733a9a1.diff"
 PATCH_4="https://github.com/lfdevs/mesa-for-android-container/commit/4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff"
-PATCH_6="https://github.com/lfdevs/mesa-for-android-container/commit/b23ef04b8e95e04ae4c77bb8c0bdcdcc97f813d7.diff"
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
 PATCH_8="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42498.patch"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
@@ -28,7 +26,7 @@ echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
 
 sed -i '/^Types:/ s/$/ deb-src/' /etc/apt/sources.list.d/debian.sources
-    
+
 apt-get update
 apt-get build-dep mesa -y -qq > /dev/null 2>&1
 apt-get build-dep libarchive -y -qq > /dev/null 2>&1
@@ -61,8 +59,6 @@ for patch in \
 "$PATCH_2" \
 "$PATCH_3" \
 "$PATCH_4" \
-"$PATCH_5" \
-"$PATCH_6" \
 "$PATCH_7" \
 "$PATCH_8" \
 "$PATCH_9" \
@@ -73,26 +69,24 @@ for patch in \
 "$PATCH_14" \
 "$PATCH_15"
 do
-    wget "$patch"
+wget "$patch"
 done
 
 wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.diff
 wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/35924.diff
 
 for patch in \
-    Gpu-Hacks.patch \
-    KGSL-hacks-whitebelyash.diff \
-    0a60c9c4108200fda20016b594dcf8806f29a28e.diff \
-    4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff \
-    216d25275a57bc543944eb369a4e31ce3733a9a1.diff \
-    b23ef04b8e95e04ae4c77bb8c0bdcdcc97f813d7.diff \
-    40159.diff \
-    42498.patch \
-    42159.patch \
-    42489.patch
+Gpu-Hacks.patch \
+KGSL-hacks-whitebelyash.diff \
+0a60c9c4108200fda20016b594dcf8806f29a28e.diff \
+4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff \
+40159.diff \
+42498.patch \
+42159.patch \
+42489.patch
 do
-    echo "Applying $patch..."
-    git apply "$patch"
+echo "Applying $patch..."
+git apply "$patch"
 done
 
 for patch in \
@@ -102,12 +96,12 @@ fix_gralloc_flushall.py \
 apply_a7xx_gen2_ubwc_hint.py \
 apply_balance_variant.py
 do
- ./"$patch"
- done
+./"$patch"
+done
 
 git add -A
 
-	echo "#define TUGEN8_DRV_VERSION \"v$VERSION\"" > ./src/freedreno/vulkan/tu_version.h
+echo "#define TUGEN8_DRV_VERSION \"v$VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 
 export CC=clang
 export CXX=clang++
@@ -164,24 +158,24 @@ EOF
 rm -rf build-android-aarch64
 
 meson setup build-android-aarch64 \
-    --cross-file android-aarch64.txt \
-    --native-file native.txt \
-    --prefix "$workdir/turnip" \
-    -Dbuildtype=debugoptimized \
-    -Dstrip=true \
-    -Dplatforms=android \
-    -Dvideo-codecs=all \
-    -Dplatform-sdk-version=35 \
-    -Dandroid-stub=true \
-    -Dgallium-drivers=zink,freedreno \
-    -Dvulkan-drivers=freedreno \
-    -Dvulkan-beta=true \
-    -Dfreedreno-kmds=kgsl \
-    -Degl=enabled \
-	-Dgles2=enabled \
-    -Dandroid-strict=false \
-	-Dallow-fallback-for=libdrm \
-	-Degl-native-platform=android
+--cross-file android-aarch64.txt \
+--native-file native.txt \
+--prefix "$workdir/turnip" \
+-Dbuildtype=debugoptimized \
+-Dstrip=true \
+-Dplatforms=android \
+-Dvideo-codecs=all \
+-Dplatform-sdk-version=35 \
+-Dandroid-stub=true \
+-Dgallium-drivers=zink,freedreno \
+-Dvulkan-drivers=freedreno \
+-Dvulkan-beta=true \
+-Dfreedreno-kmds=kgsl \
+-Degl=enabled \
+-Dgles2=enabled \
+-Dandroid-strict=false \
+-Dallow-fallback-for=libdrm \
+-Degl-native-platform=android
 
 ninja -C build-android-aarch64 install
 
@@ -194,21 +188,21 @@ mv libvulkan_freedreno.so vulkan.adreno.so
 
 cat <<EOF > meta.json
 {
-  "schemaVersion": 1,
-  "name": "Mesa Turnip v$VERSION",
-  "description": "Built from Mesa source + GPU hacks + Zink",
-  "author": "JustCallMeJade",
-  "packageVersion": "1",
-  "vendor": "Mesa3D",
-  "driverVersion": "Vulkan 1.4.354",
-  "minApi": 28,
-  "libraryName": "vulkan.adreno.so"
+"schemaVersion": 1,
+"name": "Mesa Turnip v$VERSION",
+"description": "Built from Mesa source + GPU hacks + Zink",
+"author": "JustCallMeJade",
+"packageVersion": "1",
+"vendor": "Mesa3D",
+"driverVersion": "Vulkan 1.4.354",
+"minApi": 28,
+"libraryName": "vulkan.adreno.so"
 }
 EOF
 
 zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json libGLESv2.so libEGL.so libgallium_dri.so libGLESv1_CM.so
 if [ "$GITHUB_ACTIONS" = "true" ]; then
-    echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
+echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
 fi
 
 echo "build complete."
