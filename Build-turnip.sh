@@ -95,6 +95,7 @@ disable_64b_image_atomics.py \
 apply_a7xx_gen2_ubwc_hint.py \
 apply_balance_variant.py
 do
+chmod +x "$patch"
 ./"$patch"
 done
 
