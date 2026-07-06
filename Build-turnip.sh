@@ -72,7 +72,6 @@ do
 wget "$patch"
 done
 
-wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.diff
 wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/35924.diff
 
 for patch in \
