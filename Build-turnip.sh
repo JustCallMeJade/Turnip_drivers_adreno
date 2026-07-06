@@ -15,7 +15,7 @@ PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
 PATCH_11="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_perf_variant.py"
 PATCH_12="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/disable_64b_image_atomics.py"
-PATCH_13="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/fix_gralloc_flushall.py"
+PATCH_13="https://github.com/lfdevs/mesa-for-android-container/commit/6338905ad3e8767bf5e5b04ffbbc6c3d9ed3d8e2.patch"
 PATCH_14="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_a7xx_gen2_ubwc_hint.py"
 PATCH_15="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_balance_variant.py"
 
@@ -80,6 +80,7 @@ Gpu-Hacks.patch \
 KGSL-hacks-whitebelyash.diff \
 0a60c9c4108200fda20016b594dcf8806f29a28e.diff \
 4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff \
+6338905ad3e8767bf5e5b04ffbbc6c3d9ed3d8e2.patch \
 40159.diff \
 42498.patch \
 42159.patch \
@@ -92,7 +93,6 @@ done
 for patch in \
 apply_perf_variant.py \
 disable_64b_image_atomics.py \
-fix_gralloc_flushall.py \
 apply_a7xx_gen2_ubwc_hint.py \
 apply_balance_variant.py
 do
