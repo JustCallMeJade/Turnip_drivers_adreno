@@ -90,6 +90,17 @@ git apply "$patch"
 done
 
 for patch in \
+40159.diff \
+0a60c9c4108200fda20016b594dcf8806f29a28e.diff \
+4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff
+do
+patch -p1 -i "$patch"
+done
+
+# Git apply doesn't work well with diffs 
+
+
+for patch in \
 apply_perf_variant.py \
 disable_64b_image_atomics.py \
 apply_a7xx_gen2_ubwc_hint.py \
