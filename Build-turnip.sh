@@ -76,8 +76,6 @@ wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/35924.diff
 
 for patch in \
 Gpu-Hacks.patch \
-0a60c9c4108200fda20016b594dcf8806f29a28e.diff \
-4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff \
 6338905ad3e8767bf5e5b04ffbbc6c3d9ed3d8e2.patch \
 40159.diff \
 42498.patch \
