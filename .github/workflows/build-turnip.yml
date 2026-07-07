@@ -23,7 +23,7 @@ jobs:
 
       - name: Run build script
         run: |
-          chmod +x Build-turnip.sh
+         apt update && apt install sudo && chmod +x Build-turnip.sh
           ./Build-turnip.sh
 
       - name: Debug zip output
