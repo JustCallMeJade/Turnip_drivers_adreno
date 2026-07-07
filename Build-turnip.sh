@@ -103,7 +103,7 @@ for patch in \
 apply_perf_variant.py \
 disable_64b_image_atomics.py \
 apply_a7xx_gen2_ubwc_hint.py \
-apply_balance_variant.py /
+apply_balance_variant.py \
 fix_a8xx_dev_info.py
 do
 chmod +x "$patch"
