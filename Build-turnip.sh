@@ -23,7 +23,6 @@ PATCH_14="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/a
 PATCH_15="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_balance_variant.py"
 deps="git pkg-config cmake git build-essential wget patchelf zip"
 VERSION_GITHUB="26.20-v7.0-1"
-BUILD_VARIANT="p2"
 
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
@@ -136,8 +135,8 @@ export LDFLAGS="-fuse-ld=lld"
 cat <<EOF > android-aarch64.txt
 [binaries]
 ar = '$ndk/llvm-ar'
-c = ['$ndk/aarch64-linux-android35-clang', '--sysroot=$sysroot', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
-cpp = ['$ndk/aarch64-linux-android35-clang++', '--sysroot=$sysroot', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
+c = ['$ndk/aarch64-linux-android$API_VER-clang', '--sysroot=$sysroot', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
+cpp = ['$ndk/aarch64-linux-android$API_VER-clang++', '--sysroot=$sysroot', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-error']
 c_ld = '$ndk/ld.lld'
 cpp_ld = '$ndk/ld.lld'
 strip = '$ndk/llvm-strip'
@@ -186,7 +185,7 @@ meson setup build-android-aarch64 \
 -Dstrip=true \
 -Dplatforms=android \
 -Dvideo-codecs=all \
--Dplatform-sdk-version=35 \
+-Dplatform-sdk-version="$API_VER" \
 -Dandroid-stub=true \
 -Dgallium-drivers= \
 -Dvulkan-drivers=freedreno \
