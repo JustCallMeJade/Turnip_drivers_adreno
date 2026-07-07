@@ -27,6 +27,37 @@ VERSION_GITHUB="26.20-v7.0-1"
 echo "Only works in debian Arm64!!! press Ctrl + C to exit"
 echo "Installing build dependencies..."
 
+if [[ -z "${API_VER:-}" ]]; then
+    echo "API_VER is not set. Select an API version:"
+
+    api_versions=()
+    for i in {27..36}; do
+        api_versions+=("$i")
+    done
+
+    select ver in "${api_versions[@]}"; do
+        if [[ -n "$ver" ]]; then
+            API_VER="$ver"
+            export API_VER
+            break
+        fi
+        echo "Invalid selection."
+    done
+fi
+
+if [[ -z "${BUILD_VARIANT:-}" ]]; then
+    echo "BUILD_VARIANT is not set. Select a build variant:"
+
+    select variant in p0 p1 p2; do
+        if [[ -n "$variant" ]]; then
+            BUILD_VARIANT="$variant"
+            export BUILD_VARIANT
+            break
+        fi
+        echo "Invalid selection."
+    done
+fi
+
 sed -i '/^Types:/ s/$/ deb-src/' /etc/apt/sources.list.d/debian.sources
 
 apt-get update > /dev/null 2>&1
