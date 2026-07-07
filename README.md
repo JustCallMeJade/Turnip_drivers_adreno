@@ -26,6 +26,9 @@ Updates every Day or whenever
 
 
 
+![Screenshot](images/Screenshot_20260707_204725_com_winlator_cmod_XServerDisplayActivity.jpg)
+
+
 
 ## Credits
 
