@@ -6,6 +6,9 @@ on:
   branches:
   - main
   
+env:
+ API_VER: 35
+ BUILD_VARIANT: p2
 
 permissions:
   contents: write
