@@ -13,6 +13,7 @@ PATCH_4="https://github.com/lfdevs/mesa-for-android-container/commit/4bae24252a3
 PATCH_5="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/39751.patch"
 PATCH_6="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/fix_a8xx_dev_info.py"
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
+PATCH_8="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/fix_gralloc_flushall.py"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
 PATCH_11="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_perf_variant.py"
@@ -103,6 +104,7 @@ for patch in \
 "$PATCH_5" \
 "$PATCH_6" \
 "$PATCH_7" \
+"$PATCH_8" \
 "$PATCH_9" \
 "$PATCH_10" \
 "$PATCH_11" \
@@ -153,6 +155,7 @@ git add -A
 
 echo "#define TUGEN8_DRV_VERSION \"v$VERSION\"" > ./src/freedreno/vulkan/tu_version.h
 
+export PATH=$ndk:$PATH
 export CC=clang
 export CXX=clang++
 export AR=llvm-ar
