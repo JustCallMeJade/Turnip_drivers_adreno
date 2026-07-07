@@ -10,7 +10,6 @@ PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108
 PATCH_4="https://github.com/lfdevs/mesa-for-android-container/commit/4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff"
 PATCH_5="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/39751.patch"
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
-PATCH_8="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42498.patch"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
 PATCH_11="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_perf_variant.py"
@@ -60,7 +59,6 @@ for patch in \
 "$PATCH_4" \
 "$PATCH_5" \
 "$PATCH_7" \
-"$PATCH_8" \
 "$PATCH_9" \
 "$PATCH_10" \
 "$PATCH_11" \
@@ -78,7 +76,6 @@ for patch in \
 Gpu-Hacks.patch \
 6338905ad3e8767bf5e5b04ffbbc6c3d9ed3d8e2.patch \
 40159.diff \
-42498.patch \
 42159.patch \
 42489.patch \
 39751.patch
