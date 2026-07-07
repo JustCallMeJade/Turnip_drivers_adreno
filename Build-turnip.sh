@@ -48,6 +48,9 @@ tar -xzf android-ndk-r29-linux-aarch64.tar.gz
 git clone $mesasrc --depth=1
 cd mesa
 
+git config user.name "Turnip-Buildef"
+git config user.email "sdddxd86@gmail.com"
+
 rm -f VERSION
 
 wget https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/VERSION
