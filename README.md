@@ -41,7 +41,7 @@ https://github.com/SnowNF/ndk-aarch64-linux
 
 
 
-**Script (Modified) and 8xx support:**
+**Script (Modified) and Tu_Gen8 patch:**
 https://github.com/whitebelyash
 
 
