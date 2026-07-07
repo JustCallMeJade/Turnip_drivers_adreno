@@ -19,7 +19,7 @@ PATCH_12="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/d
 PATCH_13="https://github.com/lfdevs/mesa-for-android-container/commit/6338905ad3e8767bf5e5b04ffbbc6c3d9ed3d8e2.patch"
 PATCH_14="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_a7xx_gen2_ubwc_hint.py"
 PATCH_15="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_balance_variant.py"
-
+deps="git pkg-config cmake git build-essential wget patchelf zip"
 VERSION_GITHUB="26.20-v7.0-1"
 BUILD_VARIANT="p2"
 
@@ -28,20 +28,26 @@ echo "Installing build dependencies..."
 
 sed -i '/^Types:/ s/$/ deb-src/' /etc/apt/sources.list.d/debian.sources
 
-apt-get update
+apt-get update > /dev/null 2>&1
 apt-get build-dep mesa -y -qq > /dev/null 2>&1
 apt-get build-dep libarchive -y -qq > /dev/null 2>&1
 
-apt-get install -y pkg-config git cmake wget zip patchelf libclc-21-dev -qq > /dev/null 2>&1
+for deps in "$deps"
+do
+apt install "$deps" -y > /dev/null 2>&1
+done
 
-mkdir -p "$workdir"
-cd "$workdir"
+mkdir -p "$workdir" && cd "$_"
 
 mkdir -p "$workdir/turnip"
 
-rm -rf "$workdir/r29"
-rm -rf "$workdir/mesa"
-rm -f "$workdir/android-ndk-r29-linux-aarch64.tar.gz"
+for deleted in \
+"$workdir/r29" \
+"$workdir/mesa" \
+"$workdir/android-ndk-r29-linux-aarch64.tar.gz"
+do
+rm -rf "$deleted"
+done
 
 wget -q -nv https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz
 tar -xzf android-ndk-r29-linux-aarch64.tar.gz
@@ -49,7 +55,7 @@ tar -xzf android-ndk-r29-linux-aarch64.tar.gz
 git clone $mesasrc --depth=1
 cd mesa
 
-git config user.name "Turnip-Buildef"
+git config user.name "Turnip-Builder"
 git config user.email "sdddxd86@gmail.com"
 
 rm -f VERSION
@@ -74,7 +80,7 @@ for patch in \
 "$PATCH_14" \
 "$PATCH_15"
 do
-wget "$patch"
+wget "$patch" -q -nv
 done
 
 for patch in \
