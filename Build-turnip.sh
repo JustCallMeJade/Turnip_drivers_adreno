@@ -219,8 +219,8 @@ cat <<EOF > meta.json
 EOF
 
 zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json
-if [ "$GITHUB_ACTIONS" = "true" ]; then
-echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
+if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+    echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
 fi
 
 echo "build complete."
