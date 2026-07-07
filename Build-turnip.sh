@@ -10,6 +10,7 @@ PATCH_2="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/
 PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
 PATCH_4="https://github.com/lfdevs/mesa-for-android-container/commit/4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff"
 PATCH_5="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/39751.patch"
+PATCH_6="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/fix_a8xx_dev_info.py"
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
 PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42159.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
@@ -63,6 +64,7 @@ for patch in \
 "$PATCH_3" \
 "$PATCH_4" \
 "$PATCH_5" \
+"$PATCH_6" \
 "$PATCH_7" \
 "$PATCH_9" \
 "$PATCH_10" \
@@ -101,7 +103,8 @@ for patch in \
 apply_perf_variant.py \
 disable_64b_image_atomics.py \
 apply_a7xx_gen2_ubwc_hint.py \
-apply_balance_variant.py
+apply_balance_variant.py /
+fix_a8xx_dev_info.py
 do
 chmod +x "$patch"
 ./"$patch"
