@@ -32,7 +32,7 @@ apt-get update > /dev/null 2>&1
 apt-get build-dep mesa -y -qq > /dev/null 2>&1
 apt-get build-dep libarchive -y -qq > /dev/null 2>&1
 
-for dep in "$deps"
+for dep in $deps;
 do
 apt install "$dep" -y > /dev/null 2>&1
 done
