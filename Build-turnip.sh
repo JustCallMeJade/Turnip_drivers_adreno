@@ -75,8 +75,6 @@ do
 wget "$patch"
 done
 
-wget https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/35924.diff
-
 for patch in \
 Gpu-Hacks.patch \
 39751.patch \
@@ -89,7 +87,6 @@ git apply "$patch"
 done
 
 for patch in \
-35924.diff \
 40159.diff \
 0a60c9c4108200fda20016b594dcf8806f29a28e.diff \
 4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff
@@ -180,15 +177,12 @@ meson setup build-android-aarch64 \
 -Dvideo-codecs=all \
 -Dplatform-sdk-version=35 \
 -Dandroid-stub=true \
--Dgallium-drivers=zink,freedreno \
+-Dgallium-drivers= \
 -Dvulkan-drivers=freedreno \
 -Dvulkan-beta=true \
 -Dfreedreno-kmds=kgsl \
--Degl=enabled \
--Dgles2=enabled \
--Dandroid-strict=false \
--Dallow-fallback-for=libdrm \
--Degl-native-platform=android
+-Degl=disabled \
+-Dandroid-strict=false
 
 ninja -C build-android-aarch64 install
 
