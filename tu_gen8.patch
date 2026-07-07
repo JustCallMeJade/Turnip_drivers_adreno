@@ -1,7 +1,7 @@
 From 742f5776041d61d7d6e06a7d2d15d19e356bdb56 Mon Sep 17 00:00:00 2001
 From: whitebelyash <whbexiumwork@gmail.com>
 Date: Fri, 16 Jan 2026 22:41:23 +0400
-Subject: [PATCH 1/6] HACK: u_gralloc: always use ubwc detection path
+Subject: [PATCH 1/7] HACK: u_gralloc: always use ubwc detection path
 
 u_gralloc checks if the current buffer was allocated by the Qualcomm vendor gralloc by comparing 'gmsm' magic with the buffer data. Since newer gralloc versions this way isn't working anymore, causing the condition to never success - essentially skipping setting proper DRM format modifier. This caused huge distorted picture on the screen because the allocated buffer never got a proper modifier as it should have
 
@@ -42,7 +42,7 @@ index 44fb32d8cfd..bb6459c2e29 100644
 From c554569dfd7146dec550bece9877af6edb1f7c8b Mon Sep 17 00:00:00 2001
 From: whitebelyash <whbexiumwork@gmail.com>
 Date: Wed, 14 Jan 2026 14:34:06 +0400
-Subject: [PATCH 2/6] HACK: vulkan: improve(?) timeline semaphore emulation
+Subject: [PATCH 2/7] HACK: vulkan: improve(?) timeline semaphore emulation
 
 This patch was sent for me as a way to fix bad DXVK2.4+ performance on Turnip. The regression itself occurs due to unimplemented timeline semaphore support in KGSL which means we have to emulate it.
 
@@ -159,7 +159,7 @@ index 4df11d81bda..6119126932d 100644
 From aef50ddb812b058c4caad634476df0e3e7defbf3 Mon Sep 17 00:00:00 2001
 From: whitebelyash <whbexiumwork@gmail.com>
 Date: Fri, 16 Jan 2026 22:55:20 +0400
-Subject: [PATCH 3/6] tu/freedreno: add disable_gmem GPU property
+Subject: [PATCH 3/7] tu/freedreno: add disable_gmem GPU property
 
 Disables GMEM usage completely, effectively same thing as TU_DEBUG=sysmem
 
@@ -207,7 +207,7 @@ index 4ef66a0dfd4..348b8ac838d 100644
 From 4de46984091708505be5a75234622e62cc09d813 Mon Sep 17 00:00:00 2001
 From: Karmjit Mahil <karmjit.mahil@igalia.com>
 Date: Sat, 19 Oct 2024 13:49:09 +0200
-Subject: [PATCH 4/6] tu: Add DECK_EMU to advertise being a SteamDeck
+Subject: [PATCH 4/7] tu: Add DECK_EMU to advertise being a SteamDeck
 
 This can help running games where the Turnip driver might not be
 known, preventing them from running. Some games might also make
@@ -292,7 +292,7 @@ index 7ce6d3e053a..a867640857b 100644
 From f2128134b0988a5f765c7d611f4252c91780c31b Mon Sep 17 00:00:00 2001
 From: whitebelyash <whbexiumwork@gmail.com>
 Date: Sun, 11 Jan 2026 18:30:20 +0400
-Subject: [PATCH 5/6] project: remove macOS GH CI config
+Subject: [PATCH 5/7] project: remove macOS GH CI config
 
 Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
 ---
@@ -373,7 +373,7 @@ index 7a24ce1329b..00000000000
 From 84ff0854adaac540ab522f85e5473510c7140c94 Mon Sep 17 00:00:00 2001
 From: whitebelyash <whbexiumwork@gmail.com>
 Date: Sat, 17 Jan 2026 01:17:14 +0400
-Subject: [PATCH 6/6] HACK: tu: add adrenotools-specific driver versioning &
+Subject: [PATCH 6/7] HACK: tu: add adrenotools-specific driver versioning &
  git commit hash to device name
 
 This helps finding out what driver version is used. Obviously not for upstream
@@ -420,3 +420,55 @@ index 00000000000..e7c9e688c49
 +#define TUGEN8_DRV_VERSION "unknown"
 -- 
 2.52.0
+
+
+From 2e7c07f11a85bc5618328f5abbeda9ab7ef84023 Mon Sep 17 00:00:00 2001
+From: Zan Dobersek <zdobersek@igalia.com>
+Date: Sat, 21 Feb 2026 11:35:43 +0100
+Subject: [PATCH 7/7] tu/a8xx: remove general TU_DEBUG_FLUSHALL
+
+Instead, enable draw_wfm on two additional indirect draw commands, matching
+the quirk for early a6xx gens.
+
+Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
+---
+ src/freedreno/vulkan/tu_cmd_buffer.cc | 4 ++--
+ src/freedreno/vulkan/tu_device.cc     | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/src/freedreno/vulkan/tu_cmd_buffer.cc b/src/freedreno/vulkan/tu_cmd_buffer.cc
+index f5e7b62523d..083ad935280 100644
+--- a/src/freedreno/vulkan/tu_cmd_buffer.cc
++++ b/src/freedreno/vulkan/tu_cmd_buffer.cc
+@@ -8763,7 +8763,7 @@ tu_CmdDrawIndirect(VkCommandBuffer commandBuffer,
+ 
+    tu6_emit_empty_vs_params<CHIP>(cmd);
+ 
+-   if (cmd->device->physical_device->info->props.indirect_draw_wfm_quirk)
++   if (cmd->device->physical_device->info->props.indirect_draw_wfm_quirk || CHIP >= A8XX)
+       draw_wfm(cmd);
+ 
+    tu6_draw_common<CHIP>(cmd, cs, false, 0);
+@@ -8794,7 +8794,7 @@ tu_CmdDrawIndexedIndirect(VkCommandBuffer commandBuffer,
+ 
+    tu6_emit_empty_vs_params<CHIP>(cmd);
+ 
+-   if (cmd->device->physical_device->info->props.indirect_draw_wfm_quirk)
++   if (cmd->device->physical_device->info->props.indirect_draw_wfm_quirk || CHIP >= A8XX)
+       draw_wfm(cmd);
+ 
+    tu6_draw_common<CHIP>(cmd, cs, true, 0);
+diff --git a/src/freedreno/vulkan/tu_device.cc b/src/freedreno/vulkan/tu_device.cc
+index a57dfe5b6ce..f6f69080c7b 100644
+--- a/src/freedreno/vulkan/tu_device.cc
++++ b/src/freedreno/vulkan/tu_device.cc
+@@ -2700,7 +2700,6 @@ tu_CreateDevice(VkPhysicalDevice physicalDevice,
+    case 8:
+       /* gen8 TODO: */
+       tu_env.debug |= TU_DEBUG_NOLRZ;     /* WRITE iova faults from UCHE */
+-      tu_env.debug |= TU_DEBUG_FLUSHALL;  /* dEQP-VK.draw.\*from_compute\* */
+       vk_device_dispatch_table_from_entrypoints(
+          &dispatch_table, &tu_device_entrypoints_a8xx, false);
+    }
+-- 
+2.53.0
