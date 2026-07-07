@@ -6,6 +6,7 @@ sysroot="$workdir/r29/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
 mesasrc="https://gitlab.freedesktop.org/mesa/mesa.git"
 
 PATCH_1="https://raw.githubusercontent.com/newb7171/Turnip_drivers_adreno/main/Gpu-Hacks.patch"
+PATCH_2="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/tu_gen8.patch"
 PATCH_3="https://github.com/lfdevs/mesa-for-android-container/commit/0a60c9c4108200fda20016b594dcf8806f29a28e.diff"
 PATCH_4="https://github.com/lfdevs/mesa-for-android-container/commit/4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff"
 PATCH_5="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/39751.patch"
@@ -55,6 +56,7 @@ export VERSION="$(cat $workdir/mesa/VERSION)"
 
 for patch in \
 "$PATCH_1" \
+"$PATCH_2" \
 "$PATCH_3" \
 "$PATCH_4" \
 "$PATCH_5" \
@@ -104,6 +106,8 @@ do
 chmod +x "$patch"
 ./"$patch"
 done
+
+git am tu_gen8.patch
 
 git add -A
 
