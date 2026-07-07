@@ -1,0 +1,422 @@
+From 742f5776041d61d7d6e06a7d2d15d19e356bdb56 Mon Sep 17 00:00:00 2001
+From: whitebelyash <whbexiumwork@gmail.com>
+Date: Fri, 16 Jan 2026 22:41:23 +0400
+Subject: [PATCH 1/6] HACK: u_gralloc: always use ubwc detection path
+
+u_gralloc checks if the current buffer was allocated by the Qualcomm vendor gralloc by comparing 'gmsm' magic with the buffer data. Since newer gralloc versions this way isn't working anymore, causing the condition to never success - essentially skipping setting proper DRM format modifier. This caused huge distorted picture on the screen because the allocated buffer never got a proper modifier as it should have
+
+Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
+---
+ src/util/u_gralloc/u_gralloc_fallback.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/util/u_gralloc/u_gralloc_fallback.c b/src/util/u_gralloc/u_gralloc_fallback.c
+index 44fb32d8cfd..bb6459c2e29 100644
+--- a/src/util/u_gralloc/u_gralloc_fallback.c
++++ b/src/util/u_gralloc/u_gralloc_fallback.c
+@@ -148,12 +148,16 @@ fallback_gralloc_get_buffer_info(struct u_gralloc *gralloc,
+    out->strides[0] = stride;
+ 
+ #ifdef HAS_FREEDRENO
+-   uint32_t gmsm = ('g' << 24) | ('m' << 16) | ('s' << 8) | 'm';
++  /* uint32_t gmsm = ('g' << 24) | ('m' << 16) | ('s' << 8) | 'm';
+    if (hnd->handle->numInts >= 2 && hnd->handle->data[hnd->handle->numFds] == gmsm) {
+-      /* This UBWC flag was introduced in a5xx. */
+-      bool ubwc = hnd->handle->data[hnd->handle->numFds + 1] & 0x08000000;
+-      out->modifier = ubwc ? DRM_FORMAT_MOD_QCOM_COMPRESSED : DRM_FORMAT_MOD_LINEAR;
++
+    }
++   */
++   
++   /* TODO: Actually find a way to detect a Qualcomm vendor allocated buffer */
++   /* This UBWC flag was introduced in a5xx. */
++   bool ubwc = hnd->handle->data[hnd->handle->numFds + 1] & 0x08000000;
++   out->modifier = ubwc ? DRM_FORMAT_MOD_QCOM_COMPRESSED : DRM_FORMAT_MOD_LINEAR;
+ #endif
+ 
+    return 0;
+-- 
+2.52.0
+
+
+From c554569dfd7146dec550bece9877af6edb1f7c8b Mon Sep 17 00:00:00 2001
+From: whitebelyash <whbexiumwork@gmail.com>
+Date: Wed, 14 Jan 2026 14:34:06 +0400
+Subject: [PATCH 2/6] HACK: vulkan: improve(?) timeline semaphore emulation
+
+This patch was sent for me as a way to fix bad DXVK2.4+ performance on Turnip. The regression itself occurs due to unimplemented timeline semaphore support in KGSL which means we have to emulate it.
+
+This hack improves this emulation layer. From some testing it actually does increase performance in some games like Portal 2. I'm still not sure about this hack's code quality, neither I want to review it, but it does good things, so let's include it in patchset
+
+Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
+---
+ src/vulkan/runtime/vk_sync_timeline.c | 84 +++++++++++++--------------
+ 1 file changed, 40 insertions(+), 44 deletions(-)
+
+diff --git a/src/vulkan/runtime/vk_sync_timeline.c b/src/vulkan/runtime/vk_sync_timeline.c
+index 4df11d81bda..6119126932d 100644
+--- a/src/vulkan/runtime/vk_sync_timeline.c
++++ b/src/vulkan/runtime/vk_sync_timeline.c
+@@ -507,54 +507,50 @@ vk_sync_timeline_wait_locked(struct vk_device *device,
+                              enum vk_sync_wait_flags wait_flags,
+                              uint64_t abs_timeout_ns)
+ {
+-   struct timespec abs_timeout_ts;
+-   timespec_from_nsec(&abs_timeout_ts, abs_timeout_ns);
++    struct timespec abs_timeout_ts;
++    timespec_from_nsec(&abs_timeout_ts, abs_timeout_ns);
+ 
+-   /* Wait on the queue_submit condition variable until the timeline has a
+-    * time point pending that's at least as high as wait_value.
+-    */
+-   while (state->highest_pending < wait_value) {
+-      int ret = u_cnd_monotonic_timedwait(&state->cond, &state->mutex,
+-                                          &abs_timeout_ts);
+-      if (ret == thrd_timedout)
+-         return VK_TIMEOUT;
+-
+-      if (ret != thrd_success)
+-         return vk_errorf(device, VK_ERROR_UNKNOWN, "cnd_timedwait failed");
+-   }
+-
+-   if (wait_flags & VK_SYNC_WAIT_PENDING)
+-      return VK_SUCCESS;
+-
+-   VkResult result = vk_sync_timeline_gc_locked(device, state, false);
+-   if (result != VK_SUCCESS)
+-      return result;
+-
+-   while (state->highest_past < wait_value) {
+-      struct vk_sync_timeline_point *point = vk_sync_timeline_first_point(state);
+-
+-      /* Drop the lock while we wait. */
+-      vk_sync_timeline_ref_point_locked(point);
+-      mtx_unlock(&state->mutex);
+-
+-      result = vk_sync_wait(device, &point->sync, 0,
+-                            VK_SYNC_WAIT_COMPLETE,
+-                            abs_timeout_ns);
++    /* Wait until the timeline reaches the requested value */
++    while (state->highest_past < wait_value) {
++        struct vk_sync_timeline_point *point = NULL;
+ 
+-      /* Pick the mutex back up */
+-      mtx_lock(&state->mutex);
+-      vk_sync_timeline_unref_point_locked(device, state, point);
+-
+-      /* This covers both VK_TIMEOUT and VK_ERROR_DEVICE_LOST */
+-      if (result != VK_SUCCESS)
+-         return result;
+-
+-      vk_sync_timeline_complete_point_locked(device, state, point);
+-   }
+-
+-   return VK_SUCCESS;
++        /* Get the first pending point >= wait_value */
++        list_for_each_entry(struct vk_sync_timeline_point, p,
++                            &state->pending_points, link) {
++            if (p->value >= wait_value) {
++                vk_sync_timeline_ref_point_locked(p);
++                point = p;
++                break;
++            }
++        }
++
++        if (!point) {
++            /* Nothing pending, just wait on condition variable */
++            int ret = u_cnd_monotonic_timedwait(&state->cond, &state->mutex, &abs_timeout_ts);
++            if (ret == thrd_timedout)
++                return VK_TIMEOUT;
++            if (ret != thrd_success)
++                return vk_errorf(device, VK_ERROR_UNKNOWN, "cnd_timedwait failed");
++            continue;
++        }
++
++        /* Unlock while waiting on this specific timeline point */
++        mtx_unlock(&state->mutex);
++        VkResult r = vk_sync_wait(device, &point->sync, 0, VK_SYNC_WAIT_COMPLETE, abs_timeout_ns);
++        mtx_lock(&state->mutex);
++
++        vk_sync_timeline_unref_point_locked(device, state, point);
++
++        if (r != VK_SUCCESS)
++            return r;
++
++        vk_sync_timeline_complete_point_locked(device, state, point);
++    }
++
++    return VK_SUCCESS;
+ }
+ 
++
+ static VkResult
+ vk_sync_timeline_wait(struct vk_device *device,
+                       struct vk_sync *sync,
+-- 
+2.52.0
+
+
+From aef50ddb812b058c4caad634476df0e3e7defbf3 Mon Sep 17 00:00:00 2001
+From: whitebelyash <whbexiumwork@gmail.com>
+Date: Fri, 16 Jan 2026 22:55:20 +0400
+Subject: [PATCH 3/6] tu/freedreno: add disable_gmem GPU property
+
+Disables GMEM usage completely, effectively same thing as TU_DEBUG=sysmem
+
+Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
+---
+ src/freedreno/common/freedreno_dev_info.h | 3 +++
+ src/freedreno/vulkan/tu_cmd_buffer.cc     | 6 ++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/src/freedreno/common/freedreno_dev_info.h b/src/freedreno/common/freedreno_dev_info.h
+index 70b262afb7e..cd48ee05762 100644
+--- a/src/freedreno/common/freedreno_dev_info.h
++++ b/src/freedreno/common/freedreno_dev_info.h
+@@ -467,6 +467,9 @@ struct fd_dev_info {
+        * expected:
+        */
+       bool has_salu_int_narrowing_quirk;
++
++      /* If GMEM needs to be disabled for this GPU */
++      bool disable_gmem;
+    } props;
+ };
+ 
+diff --git a/src/freedreno/vulkan/tu_cmd_buffer.cc b/src/freedreno/vulkan/tu_cmd_buffer.cc
+index 4ef66a0dfd4..348b8ac838d 100644
+--- a/src/freedreno/vulkan/tu_cmd_buffer.cc
++++ b/src/freedreno/vulkan/tu_cmd_buffer.cc
+@@ -1352,6 +1352,12 @@ use_sysmem_rendering(struct tu_cmd_buffer *cmd,
+       return true;
+    }
+ 
++   bool no_gmem = cmd->device->physical_device->dev_info.props.disable_gmem;
++   if (no_gmem) {
++       cmd->state.rp.gmem_disable_reason = "Unsupported GPU";
++       return true;
++    }
++
+    /* can't fit attachments into gmem */
+    if (!cmd->state.tiling->possible) {
+       cmd->state.rp.gmem_disable_reason = "Can't fit attachments into gmem";
+-- 
+2.52.0
+
+
+From 4de46984091708505be5a75234622e62cc09d813 Mon Sep 17 00:00:00 2001
+From: Karmjit Mahil <karmjit.mahil@igalia.com>
+Date: Sat, 19 Oct 2024 13:49:09 +0200
+Subject: [PATCH 4/6] tu: Add DECK_EMU to advertise being a SteamDeck
+
+This can help running games where the Turnip driver might not be
+known, preventing them from running. Some games might also make
+adjustments to graphics settings if they detect the SteamDeck.
+
+Signed-off-by: Karmjit Mahil <karmjit.mahil@igalia.com>
+Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
+---
+ src/freedreno/vulkan/tu_device.cc | 15 +++++++++++++++
+ src/freedreno/vulkan/tu_util.cc   |  1 +
+ src/freedreno/vulkan/tu_util.h    |  1 +
+ 3 files changed, 17 insertions(+)
+
+diff --git a/src/freedreno/vulkan/tu_device.cc b/src/freedreno/vulkan/tu_device.cc
+index 377ee0ddc43..cda757e11ae 100644
+--- a/src/freedreno/vulkan/tu_device.cc
++++ b/src/freedreno/vulkan/tu_device.cc
+@@ -911,6 +911,12 @@ tu_get_physical_device_properties_1_2(struct tu_physical_device *pdevice,
+       };
+    }
+ 
++   if (TU_DEBUG(DECK_EMU)) {
++      p->driverID = VK_DRIVER_ID_MESA_RADV;
++      memset(p->driverName, 0, sizeof(p->driverName));
++      snprintf(p->driverName, VK_MAX_DRIVER_NAME_SIZE, "radv");
++   }
++
+    p->denormBehaviorIndependence =
+       VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL;
+    p->roundingModeIndependence =
+@@ -1203,6 +1209,11 @@ tu_get_properties(struct tu_physical_device *pdevice,
+    props->deviceID = pdevice->dev_id.chip_id;
+    props->deviceType = VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU;
+ 
++   if (TU_DEBUG(DECK_EMU)) {
++      props->vendorID = 0x1002;
++      props->deviceID = 0x163F;
++   }
++
+    /* Vulkan 1.4 */
+    props->dynamicRenderingLocalReadDepthStencilAttachments = true;
+    props->dynamicRenderingLocalReadMultisampledAttachments = true;
+@@ -1217,6 +1228,10 @@ tu_get_properties(struct tu_physical_device *pdevice,
+    strcpy(props->deviceName, pdevice->name);
+    memcpy(props->pipelineCacheUUID, pdevice->cache_uuid, VK_UUID_SIZE);
+ 
++   if (TU_DEBUG(DECK_EMU)) {
++      strcpy(props->deviceName, "AMD Custom GPU 0405 (RADV VANGOGH)");
++   }
++
+    tu_get_physical_device_properties_1_1(pdevice, props);
+    tu_get_physical_device_properties_1_2(pdevice, props);
+    tu_get_physical_device_properties_1_3(pdevice, props);
+diff --git a/src/freedreno/vulkan/tu_util.cc b/src/freedreno/vulkan/tu_util.cc
+index e19d43bb8a9..9d6ed7d2e71 100644
+--- a/src/freedreno/vulkan/tu_util.cc
++++ b/src/freedreno/vulkan/tu_util.cc
+@@ -56,6 +56,7 @@ static const struct debug_control tu_debug_options[] = {
+    { "nofdm", TU_DEBUG_NOFDM },
+    { "nocb", TU_DEBUG_NO_CONCURRENT_BINNING },
+    { "forcecb", TU_DEBUG_FORCE_CONCURRENT_BINNING },
++   { "deck_emu", TU_DEBUG_DECK_EMU },
+    { NULL, 0 }
+ };
+ 
+diff --git a/src/freedreno/vulkan/tu_util.h b/src/freedreno/vulkan/tu_util.h
+index 7ce6d3e053a..a867640857b 100644
+--- a/src/freedreno/vulkan/tu_util.h
++++ b/src/freedreno/vulkan/tu_util.h
+@@ -75,6 +75,7 @@ enum tu_debug_flags : uint64_t
+    TU_DEBUG_NOFDM                    = BITFIELD64_BIT(34),
+    TU_DEBUG_NO_CONCURRENT_BINNING    = BITFIELD64_BIT(35),
+    TU_DEBUG_FORCE_CONCURRENT_BINNING = BITFIELD64_BIT(36),
++   TU_DEBUG_DECK_EMU                 = BITFIELD64_BIT(37),
+ };
+ 
+ struct tu_env {
+-- 
+2.52.0
+
+
+From f2128134b0988a5f765c7d611f4252c91780c31b Mon Sep 17 00:00:00 2001
+From: whitebelyash <whbexiumwork@gmail.com>
+Date: Sun, 11 Jan 2026 18:30:20 +0400
+Subject: [PATCH 5/6] project: remove macOS GH CI config
+
+Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
+---
+ .github/workflows/macos.yml | 60 -------------------------------------
+ 1 file changed, 60 deletions(-)
+ delete mode 100644 .github/workflows/macos.yml
+
+diff --git a/.github/workflows/macos.yml b/.github/workflows/macos.yml
+deleted file mode 100644
+index 7a24ce1329b..00000000000
+--- a/.github/workflows/macos.yml
++++ /dev/null
+@@ -1,60 +0,0 @@
+-name: macOS-CI
+-on: push
+-
+-permissions:
+-  contents: read
+-
+-jobs:
+-  macOS-CI:
+-    strategy:
+-      matrix:
+-        glx_option: ['dri', 'xlib']
+-    runs-on: macos-11
+-    env:
+-      GALLIUM_DUMP_CPU: true
+-      MESON_EXEC: /Users/runner/Library/Python/3.11/bin/meson
+-    steps:
+-    - name: Checkout
+-      uses: actions/checkout@v3
+-    - name: Install Dependencies
+-      run: |
+-        cat > Brewfile <<EOL
+-        brew "bison"
+-        brew "expat"
+-        brew "gettext"
+-        brew "libx11"
+-        brew "libxcb"
+-        brew "libxdamage"
+-        brew "libxext"
+-        brew "molten-vk"
+-        brew "ninja"
+-        brew "pkg-config"
+-        brew "python@3.10"
+-        EOL
+-
+-        brew update
+-        brew bundle --verbose
+-    - name: Install Mako and meson
+-      run: pip3 install --user mako meson
+-    - name: Configure
+-      run: |
+-        cat > native_config <<EOL
+-        [binaries]
+-        llvm-config = '/usr/local/opt/llvm/bin/llvm-config'
+-        EOL
+-        $MESON_EXEC . build --native-file=native_config -Dmoltenvk-dir=$(brew --prefix molten-vk) -Dbuild-tests=true -Dgallium-drivers=swrast,zink -Dglx=${{ matrix.glx_option }}
+-    - name: Build
+-      run: $MESON_EXEC compile -C build
+-    - name: Test
+-      run: $MESON_EXEC test -C build --print-errorlogs
+-    - name: Install
+-      run: $MESON_EXEC install -C build --destdir $PWD/install
+-    - name: 'Upload Artifact'
+-      if: always()
+-      uses: actions/upload-artifact@v3
+-      with:
+-        name: macos-${{ matrix.glx_option }}-result
+-        path: |
+-          build/meson-logs/
+-          install/
+-        retention-days: 5
+-- 
+2.52.0
+
+
+From 84ff0854adaac540ab522f85e5473510c7140c94 Mon Sep 17 00:00:00 2001
+From: whitebelyash <whbexiumwork@gmail.com>
+Date: Sat, 17 Jan 2026 01:17:14 +0400
+Subject: [PATCH 6/6] HACK: tu: add adrenotools-specific driver versioning &
+ git commit hash to device name
+
+This helps finding out what driver version is used. Obviously not for upstream
+
+Signed-off-by: whitebelyash <whbexiumwork@gmail.com>
+---
+ src/freedreno/vulkan/tu_device.cc | 8 +++++++-
+ src/freedreno/vulkan/tu_version.h | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+ create mode 100644 src/freedreno/vulkan/tu_version.h
+
+diff --git a/src/freedreno/vulkan/tu_device.cc b/src/freedreno/vulkan/tu_device.cc
+index cda757e11ae..1d654a8ca83 100644
+--- a/src/freedreno/vulkan/tu_device.cc
++++ b/src/freedreno/vulkan/tu_device.cc
+@@ -46,6 +46,9 @@
+ #include "tu_tracepoints.h"
+ #include "tu_wsi.h"
+ 
++#include "git_sha1.h"
++#include "tu_version.h"
++
+ #if DETECT_OS_ANDROID
+ #include <vndk/hardware_buffer.h>
+ #endif
+@@ -1225,7 +1228,10 @@ tu_get_properties(struct tu_physical_device *pdevice,
+    props->sparseResidencyAlignedMipSize = false;
+    props->sparseResidencyNonResidentStrict = true;
+ 
+-   strcpy(props->deviceName, pdevice->name);
++   char devname[128];
++   strcpy(devname, pdevice->name);
++   strcat(devname, MESA_GIT_SHA1 "/" TUGEN8_DRV_VERSION);
++   strcpy(props->deviceName, devname);
+    memcpy(props->pipelineCacheUUID, pdevice->cache_uuid, VK_UUID_SIZE);
+ 
+    if (TU_DEBUG(DECK_EMU)) {
+diff --git a/src/freedreno/vulkan/tu_version.h b/src/freedreno/vulkan/tu_version.h
+new file mode 100644
+index 00000000000..e7c9e688c49
+--- /dev/null
++++ b/src/freedreno/vulkan/tu_version.h
+@@ -0,0 +1 @@
++#define TUGEN8_DRV_VERSION "unknown"
+-- 
+2.52.0
