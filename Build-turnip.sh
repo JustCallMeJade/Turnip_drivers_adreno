@@ -143,7 +143,8 @@ apply_perf_variant.py \
 disable_64b_image_atomics.py \
 apply_a7xx_gen2_ubwc_hint.py \
 apply_balance_variant.py \
-fix_a8xx_dev_info.py
+fix_a8xx_dev_info.py \
+fix_gralloc_flushall.py
 do
 chmod +x "$patch"
 ./"$patch"
