@@ -110,7 +110,7 @@ chmod +x "$patch"
 ./"$patch"
 done
 
-git am tu_gen8.patch
+git am --whitespace=fix tu_gen8.patch
 
 git add -A
 
