@@ -60,13 +60,13 @@ fi
 
 sudo sed -i '/^Types:/{/deb-src/! s/$/ deb-src/;}' /etc/apt/sources.list.d/debian.sources
 
-sudo apt-get update > /dev/null 2>&1
+sudo apt-get update -y > /dev/null 2>&1
 sudo apt-get build-dep mesa -y -qq > /dev/null 2>&1
 sudo apt-get build-dep libarchive -y -qq > /dev/null 2>&1
 
 for dep in $deps;
 do
-sudo apt install "$dep" -y > /dev/null 2>&1
+sudo apt install -y "$dep" > /dev/null 2>&1
 done
 
 mkdir -p "$workdir" && cd "$_"
