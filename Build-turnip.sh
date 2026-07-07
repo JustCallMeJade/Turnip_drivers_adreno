@@ -255,6 +255,4 @@ fi
 
 echo "build complete."
 
-ls # random ignore this
-
 exit 0
