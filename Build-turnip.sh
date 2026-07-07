@@ -152,6 +152,11 @@ done
 
 git am --whitespace=fix tu_gen8.patch
 
+sed -i 's/anb->handle->/((const native_handle_t \*)anb->handle)->/g' src/vulkan/runtime/vk_android.c || true
+sed -i 's/typedef const native_handle_t\* buffer_handle_t;/typedef void\* buffer_handle_t;/g' include/android_stub/cutils/native_handle.h || true
+sed -i 's/, hnd->handle/, (void \*)hnd->handle/g' src/util/u_gralloc/u_gralloc_fallback.c || true
+sed -i 's/native_buffer->handle->/((const native_handle_t \*)native_buffer->handle)->/g' src/vulkan/runtime/vk_android.c || true
+
 git add -A
 
 echo "#define TUGEN8_DRV_VERSION \"v$VERSION\"" > ./src/freedreno/vulkan/tu_version.h
