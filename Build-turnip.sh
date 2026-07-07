@@ -32,9 +32,9 @@ apt-get update > /dev/null 2>&1
 apt-get build-dep mesa -y -qq > /dev/null 2>&1
 apt-get build-dep libarchive -y -qq > /dev/null 2>&1
 
-for deps in "$deps"
+for dep in "$deps"
 do
-apt install "$deps" -y > /dev/null 2>&1
+apt install "$dep" -y > /dev/null 2>&1
 done
 
 mkdir -p "$workdir" && cd "$_"
