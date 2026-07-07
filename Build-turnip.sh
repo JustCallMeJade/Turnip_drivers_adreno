@@ -63,7 +63,7 @@ SED_FIXUPS=(
 )
 
 deps="git pkg-config cmake git build-essential wget patchelf zip"
-VERSION_GITHUB="26.20-v7.0-1"
+VERSION_GITHUB="26.20-v8.0"
 
 # ---------------------------------------------------------------------------
 # Functions
@@ -95,7 +95,7 @@ select_build_variant() {
         echo "BUILD_VARIANT is not set. Select a build variant:"
 
         local variant
-        select variant in p0 p1 p2; do
+        select variant in p p1 p2; do
             if [[ -n "$variant" ]]; then
                 BUILD_VARIANT="$variant"
                 export BUILD_VARIANT
