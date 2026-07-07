@@ -197,7 +197,7 @@ cat <<EOF > meta.json
 {
 "schemaVersion": 1,
 "name": "Mesa Turnip v$VERSION",
-"description": "Built from Mesa source + GPU hacks + Zink",
+"description": "Built from Mesa source + GPU hacks",
 "author": "JustCallMeJade",
 "packageVersion": "1",
 "vendor": "Mesa3D",
@@ -207,7 +207,7 @@ cat <<EOF > meta.json
 }
 EOF
 
-zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json libGLESv2.so libEGL.so libgallium_dri.so libGLESv1_CM.so
+zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json
 if [ "$GITHUB_ACTIONS" = "true" ]; then
 echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
 fi
