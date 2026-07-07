@@ -5,6 +5,8 @@ on:
  push:
   branches:
   - main
+  paths:
+  - "Build-turnip.sh"
   
 env:
  API_VER: 35
