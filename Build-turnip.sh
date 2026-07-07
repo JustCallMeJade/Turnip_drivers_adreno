@@ -58,15 +58,15 @@ if [[ -z "${BUILD_VARIANT:-}" ]]; then
     done
 fi
 
-sed -i '/^Types:/{/deb-src/! s/$/ deb-src/;}' /etc/apt/sources.list.d/debian.sources
+sudo sed -i '/^Types:/{/deb-src/! s/$/ deb-src/;}' /etc/apt/sources.list.d/debian.sources
 
-apt-get update > /dev/null 2>&1
-apt-get build-dep mesa -y -qq > /dev/null 2>&1
-apt-get build-dep libarchive -y -qq > /dev/null 2>&1
+sudo apt-get update > /dev/null 2>&1
+sudo apt-get build-dep mesa -y -qq > /dev/null 2>&1
+sudo apt-get build-dep libarchive -y -qq > /dev/null 2>&1
 
 for dep in $deps;
 do
-apt install "$dep" -y > /dev/null 2>&1
+sudo apt install "$dep" -y > /dev/null 2>&1
 done
 
 mkdir -p "$workdir" && cd "$_"
