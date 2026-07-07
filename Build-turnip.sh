@@ -58,7 +58,7 @@ if [[ -z "${BUILD_VARIANT:-}" ]]; then
     done
 fi
 
-sed -i '/^Types:/ s/$/ deb-src/' /etc/apt/sources.list.d/debian.sources
+sed -i '/^Types:/{/deb-src/! s/$/ deb-src/;}' /etc/apt/sources.list.d/debian.sources
 
 apt-get update > /dev/null 2>&1
 apt-get build-dep mesa -y -qq > /dev/null 2>&1
