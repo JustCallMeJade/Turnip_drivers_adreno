@@ -1,0 +1,34 @@
+name: VirGL
+
+on:
+ workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04-arm
+
+    container:
+      image: debian:sid
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run build script
+        run: |
+         cd Extras && chmod +x virgl-winlator.sh
+          ./virgl-winlator.sh
+
+      - name: Debug zip output
+        run: |
+          find workdir -type f -name "*.zip" -print
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: workdir/output_dir/*.zip
+          if-no-files-found: error
