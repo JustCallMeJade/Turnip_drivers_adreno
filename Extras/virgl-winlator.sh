@@ -1,5 +1,8 @@
 #!/bin/bash
 
+workdir="$(pwd)/workdir"
+install_dir="$workdir/install_dir
+
 sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
 apt update
@@ -10,9 +13,11 @@ apt install wget zip git pkg-config
 
 git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa
 
-mkdir workdir
+mkdir $workdir
 
 cd workdir
+
+mkdir $install_dir
 
 cd mesa
 
@@ -22,6 +27,6 @@ wget https://github.com/alexvorxx/Mesa-VirGL/commit/e67a72f8691dd450a527ab262b67
 git apply --3way --whitespace=fix 6a734cc1e1c6565fe688d0d05d37ecc3b2f330d2.patch
 git apply --3way --whitespace=fix e67a72f8691dd450a527ab262b676e6fb21ec602.patch
 
-meson setup build -Dplatforms=x11 -Dvulkan-drivers= -Dglx=xlib -Dllvm=disabled -Dgallium-drivers=virgl -Dopengl=true -Degl=disabled -Dc_args="-Wno-error"
+meson setup build --prefix "$install_dir"  -Dplatforms=x11 -Dvulkan-drivers= -Dglx=xlib -Dllvm=disabled -Dgallium-drivers=virgl -Dopengl=true -Degl=disabled -Dc_args="-Wno-error"
 
 ninja -C build install
