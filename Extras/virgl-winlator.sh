@@ -9,7 +9,7 @@ apt update
 
 apt build-dep mesa -y
 
-apt install wget zip git pkg-config
+apt install wget zip git pkg-config -y
 
 git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa
 
