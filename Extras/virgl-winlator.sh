@@ -5,8 +5,6 @@ workdir="$(pwd)/workdir"
 install_dir="$workdir/install_dir"
 
 # Enable source repositories (required for apt build-dep)
-sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
-
 apt update
 
 # Install build dependencies for Mesa
@@ -26,7 +24,7 @@ git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa
 
 cd mesa
 
-sed -i "/Xlib based GLX requires llvmpipe/ s/^/# /" meson.build
+sed -i "/error('Xlib based GLX requires llvmpipe')/ s/^/# /" meson.build
 
 # Download patches
 wget -O 6a734cc1.patch \
