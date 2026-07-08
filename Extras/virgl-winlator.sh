@@ -26,6 +26,8 @@ git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa
 
 cd mesa
 
+sed -i "/Xlib based GLX requires llvmpipe/ s/^/# /" meson.build
+
 # Download patches
 wget -O 6a734cc1.patch \
     https://github.com/alexvorxx/Mesa-VirGL/commit/6a734cc1e1c6565fe688d0d05d37ecc3b2f330d2.patch
