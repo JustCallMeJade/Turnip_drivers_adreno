@@ -1,7 +1,7 @@
 #!/bin/bash
 
 workdir="$(pwd)/workdir"
-install_dir="$workdir/install_dir
+install_dir="$workdir/install_dir"
 
 sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
 
