@@ -5,9 +5,9 @@ workdir="$(pwd)/workdir"
 install_dir="$workdir/install_dir"
 
 # Enable source repositories (required for apt build-dep)
-apt update
 
 sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
+apt update 
 # Install build dependencies for Mesa
 apt build-dep -y mesa
 
