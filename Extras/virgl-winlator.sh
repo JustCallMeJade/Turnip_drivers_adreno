@@ -24,7 +24,7 @@ git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa
 
 cd mesa
 
-wget -O bruh.diff https://github.com/lfdevs/mesa-for-android-container/commit/39ab19b15bbb0c9aaf899419b345641c44e5eda5.diff
+wget -O bruh.diff https://github.com/lfdevs/mesa-for-android-container/commit/a0274209044a75402ec309bee18edeb0cbe6282c.diff
 # Apply patches
 git apply --3way --whitespace=fix bruh.patch
 
