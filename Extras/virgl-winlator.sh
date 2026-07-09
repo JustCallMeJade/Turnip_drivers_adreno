@@ -24,18 +24,11 @@ git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa
 
 cd mesa
 
-sed -i "/error('Xlib based GLX requires llvmpipe')/ s/^/# /" meson.build
-
-# Download patches
-wget -O 6a734cc1.patch \
-    https://github.com/alexvorxx/Mesa-VirGL/commit/6a734cc1e1c6565fe688d0d05d37ecc3b2f330d2.patch
-
-wget -O e67a72f8.patch \
-    https://github.com/alexvorxx/Mesa-VirGL/commit/e67a72f8691dd450a527ab262b676e6fb21ec602.patch
-
+wget -O bruh.diff https://github.com/lfdevs/mesa-for-android-container/commit/39ab19b15bbb0c9aaf899419b345641c44e5eda5.diff
+wget -O  bruh2.diff https://github.com/lfdevs/mesa-for-android-container/commit/a0274209044a75402ec309bee18edeb0cbe6282c.diff
 # Apply patches
-git apply --3way --whitespace=fix 6a734cc1.patch
-git apply --3way --whitespace=fix e67a72f8.patch
+git apply --3way --whitespace=fix bruh.patch
+git apply --3way --whitespace=fix bruh2.patch
 
 # Configure Mesa
 meson setup build \
