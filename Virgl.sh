@@ -21,7 +21,7 @@ dnf install x11-* -y > /dev/null 2>&1
 
 echo "Cloning mesa.."
 
-git clone https://gitlab.freedesktop.org/mesa/mesa.git
+git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa.git
 
 cd mesa
 
