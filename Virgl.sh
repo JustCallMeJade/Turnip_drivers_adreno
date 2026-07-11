@@ -58,7 +58,7 @@ echo "Packaging VirGL..."
 
 cd "$install_dir/lib64"
 
-rm -rf !(libGL.so|libGL.so.1|libGL.so.1.*)
+rm -rf !(libGL.so.1)
 
 cd ..
 
@@ -75,16 +75,8 @@ cat > profile.json <<EOF
   "description": "VirGL-$VERSION Compiled by JustCallMeJade [https://github.com/JustCallMeJade]",
   "files": [
     {
-      "source": "VirGL/libGL.so",
-      "target": "\${libdir}/libGL.so"
-    },
-    {
       "source": "VirGL/libGL.so.1",
       "target": "\${libdir}/libGL.so.1"
-    },
-    {
-      "source": "VirGL/$LIBGL_REAL",
-      "target": "\${libdir}/$LIBGL_REAL"
     }
   ]
 }
