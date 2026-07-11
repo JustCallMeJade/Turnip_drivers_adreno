@@ -25,7 +25,7 @@ git clone https://gitlab.freedesktop.org/mesa/mesa.git
 
 cd mesa
 
-export VERSION="$(git describe --tags --abbrev=0 | sed 's/^mesa-//')"
+export VERSION="$(cat $workdir/mesa/VERSION)"
 
 echo "Patching VirGL for Xlib"
 
@@ -70,7 +70,7 @@ cat > profile.json <<EOF
   "type": "VirGL",
   "versionName": "$VERSION",
   "versionCode": 1,
-  "description": "VirGL-$VERSION Extract from Winlator-v7 [https://github.com/brunodev85/winlator]",
+  "description": "VirGL-$VERSION Compiled by JustCallMeJade [https://github.com/JustCallMeJade]",
   "files": [
     {
       "source": "VirGL/libGL.so",
