@@ -28,7 +28,10 @@ meson setup build \
 -Dbuildtype=release \
 -Dllvm=disabled \
 -Dgallium-drivers=virgl \
--Dshared-glapi=true
+-Dshared-glapi=true \
+-Dopengl=true \
+-Degl=disabled \
+-Dgles2=disabled
 
 ninja -C build install
 
