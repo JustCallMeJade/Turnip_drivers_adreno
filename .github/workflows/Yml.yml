@@ -1,0 +1,34 @@
+name: Virgl
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04-arm
+
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run build script
+        run: |
+          chmod +x virgl.sh
+          ./virgl.sh
+
+      - name: Debug so output
+        run: |
+          find workdir -type f -name "*.so" -print
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: virgl-build
+          path: workdir/install/*.so
+          if-no-files-found: error
