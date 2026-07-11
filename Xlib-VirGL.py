@@ -114,12 +114,24 @@ FIXES = {
 
 
 def find_files(root, names):
-    """Walk root and return {filename: [full paths found]} for each target name."""
+    """Return {filename: [full paths found]} for each target name.
+
+    meson.build exists in almost every subdirectory of a Meson project,
+    so it's only looked up at the tree root. Every other filename here is
+    distinctive enough to search for recursively.
+    """
     found = {name: [] for name in names}
+
+    root_meson = os.path.join(root, "meson.build")
+    if "meson.build" in found and os.path.isfile(root_meson):
+        found["meson.build"].append(root_meson)
+
+    recursive_names = {n for n in names if n != "meson.build"}
     for dirpath, _, filenames in os.walk(root):
         for filename in filenames:
-            if filename in found:
+            if filename in recursive_names:
                 found[filename].append(os.path.join(dirpath, filename))
+
     return found
 
 
