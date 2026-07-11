@@ -41,14 +41,16 @@ meson setup build \
     -Dglx=xlib \
     -Dvulkan-drivers= \
     -Dgallium-va=disabled \
-    -Dbuildtype=release \
+    -Dbuildtype=debugoptimized \
     -Dllvm=disabled \
+    -Dshared-llvm=disabled \
     -Dgallium-drivers=virgl \
     -Dshared-glapi=enabled \
     -Dopengl=true \
     -Degl=disabled \
     -Dgles2=disabled \
-    -Dgles1=disabled
+    -Dgles1=disabled \
+    -Dvideo-codecs=all
 
 ninja -C build install
 
