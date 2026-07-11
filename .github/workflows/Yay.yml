@@ -1,0 +1,29 @@
+name: Fedora Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: fedora:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update packages
+        run: dnf -y update
+
+      - name: Install Git
+        run: dnf -y install git
+
+      - name: Show system information
+        run: |
+          cat /etc/os-release
+          uname -a
+
+      - name: Run your commands
+        run: |
+          echo "Running inside Fedora!"
