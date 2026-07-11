@@ -61,15 +61,15 @@ cat > profile.json <<EOF
   "files": [
     {
       "source": "VirGL/libGL.so",
-      "target": "${libdir}/libGL.so"
+      "target": "\${libdir}/libGL.so"
     },
     {
       "source": "VirGL/libGL.so.1",
-      "target": "${libdir}/libGL.so.1"
+      "target": "\${libdir}/libGL.so.1"
     },
     {
       "source": "VirGL/libGL.so.1.5.0",
-      "target": "${libdir}/libGL.so.1.5.0"
+      "target": "\${libdir}/libGL.so.1.5.0"
     }
   ]
 }
