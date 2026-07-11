@@ -4,20 +4,20 @@ set -o pipefail
 
 workdir="$(pwd)/workdir"
 install_dir="$workdir/install"
+alias install="dnf update -y > /dev/null 2>&1
+dnf builddep mesa -y > /dev/null 2>&1
+dnf install git cmake python3 wget -y > /dev/null 2>&1
+dnf install xcb-* -y > /dev/null 2>&1
+dnf install x11-* -y > /dev/null 2>&1"
 
-shopt -s extglob
+shopt -s extglob expand_aliases
 
 mkdir -p "$workdir" "$install_dir"
 cd "$workdir"
 
 echo "Installing build deps.."
 
-dnf update -y > /dev/null 2>&1
-
-dnf builddep mesa -y > /dev/null 2>&1
-dnf install git cmake python3 wget -y > /dev/null 2>&1
-dnf install xcb-* -y > /dev/null 2>&1
-dnf install x11-* -y > /dev/null 2>&1
+install
 
 echo "Cloning mesa.."
 
