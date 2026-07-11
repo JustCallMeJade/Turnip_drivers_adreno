@@ -64,9 +64,6 @@ cd ..
 
 mv lib64 VirGL
 
-# Automatically detect the real libGL version
-LIBGL_REAL=$(basename VirGL/libGL.so.1.*)
-
 cat > profile.json <<EOF
 {
   "type": "VirGL",
