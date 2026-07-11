@@ -31,7 +31,8 @@ meson setup build \
 -Dshared-glapi=enabled \
 -Dopengl=true \
 -Degl=disabled \
--Dgles2=disabled
+-Dgles2=disabled \
+-Dgles1=disabled
 
 ninja -C build install
 
