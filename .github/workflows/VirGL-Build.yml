@@ -1,4 +1,4 @@
-name: Virgl
+name: Virgl Xlib Build
 
 on:
   workflow_dispatch:
