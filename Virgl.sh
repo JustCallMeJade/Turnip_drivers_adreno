@@ -28,7 +28,7 @@ meson setup build \
 -Dbuildtype=release \
 -Dllvm=disabled \
 -Dgallium-drivers=virgl \
--Dshared-glapi=true \
+-Dshared-glapi=enabled \
 -Dopengl=true \
 -Degl=disabled \
 -Dgles2=disabled
