@@ -56,13 +56,11 @@ ninja -C build install
 
 echo "Packaging VirGL..."
 
-cd "$install_dir/lib64"
+cd $install_dir/install
 
-rm -rf !(libGL.so.1)
+mkdir VirGL
 
-cd ..
-
-mv lib64 VirGL
+cp lib64/libGL.so.1 $install_dir/install/VirGL
 
 cat > profile.json <<EOF
 {
