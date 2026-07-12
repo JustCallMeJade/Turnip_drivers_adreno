@@ -1,4 +1,4 @@
-name: Virgl Xlib Build
+name: Virgl Builds
 
 on:
   workflow_dispatch:
@@ -7,7 +7,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  virgl-xlib-build:
+    name: Virgl Xlib Build
     runs-on: ubuntu-26.04-arm
 
     container:
@@ -22,13 +23,67 @@ jobs:
           chmod +x Virgl.sh
           ./Virgl.sh
 
-      - name: Debug so output
+      - name: Debug Xlib output
         run: |
-          find workdir -type f -name "*.so" -print
+          find workdir -type f -name "*.wcp" -print
 
-      - name: Upload artifact
+      - name: Upload Xlib artifact
         uses: actions/upload-artifact@v4
         with:
-          name: virgl-build
+          name: virgl-xlib-build
           path: workdir/install/*.wcp
+          if-no-files-found: error
+
+  virglrenderer-build:
+    name: Virglrenderer Build
+    runs-on: ubuntu-26.04-arm
+
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run server build script
+        run: |
+          chmod +x Virgl-server.sh
+          ./Virgl-server.sh
+
+      - name: Debug renderer output
+        run: |
+          find workdir/install-dir/lib64 -type f -name "*.so" -print
+
+      - name: Upload renderer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: virglrenderer-build
+          path: workdir/install-dir/lib64/*
+          if-no-files-found: error
+
+  virgl-gl-build:
+    name: Virgl GL Build
+    runs-on: ubuntu-26.04-arm
+
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run GL build script
+        run: |
+          chmod +x Virgl-GL-builds.sh
+          ./Virgl-GL-builds.sh
+
+      - name: Debug GL output
+        run: |
+          find workdir/install/lib64 -type f -print
+
+      - name: Upload GL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: virgl-gl-build
+          path: workdir/install/lib64/*
           if-no-files-found: error
