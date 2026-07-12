@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Walks a source tree, finds the known Mesa files anywhere under it, and patches them in place."""
 
 import os
 import sys
