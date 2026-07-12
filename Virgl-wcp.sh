@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -o pipefail
+set -eo pipefail
 
 workdir="$(pwd)/workdir"
 install_dir="$workdir/install"
