@@ -6,7 +6,7 @@ workdir="$(pwd)/workdir"
 install_dir="$workdir/install"
 alias install="dnf update -y > /dev/null 2>&1
 dnf builddep mesa -y > /dev/null 2>&1
-dnf install git cmake python3 wget -y > /dev/null 2>&1
+dnf install git cmake python3 wget patchelf -y > /dev/null 2>&1
 dnf install xcb-* -y > /dev/null 2>&1
 dnf install x11-* -y > /dev/null 2>&1"
 
@@ -54,3 +54,17 @@ meson setup build \
     -Dstrip=true
 
 ninja -C build -j$(nproc) install
+
+echo "Patching libGL..."
+
+cd "$install_dir/lib64"
+
+patchelf --set-soname libGL.so.1.7.0 libGL.so.1.5.0
+mv libGL.so.1.5.0 libGL.so.1.7.0
+ln -sf libGL.so.1.7.0 libGL.so.1
+
+if [ -L libGL.so ]; then
+    ln -sf libGL.so.1 libGL.so
+fi
+
+echo "Done!"
