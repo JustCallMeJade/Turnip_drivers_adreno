@@ -20,8 +20,8 @@ jobs:
 
       - name: Run build script
         run: |
-          chmod +x Virgl.sh
-          ./Virgl.sh
+          chmod +x Virgl-wcp.sh
+          ./Virgl-wcp.sh
 
       - name: Debug Xlib output
         run: |
