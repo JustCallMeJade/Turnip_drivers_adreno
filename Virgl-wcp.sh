@@ -73,7 +73,7 @@ cd ..
 
 mkdir -p VirGL
 
-cp -P $install_dir/lib64/libGL.so.1 $install_dir/VirGL/
+cp -P "$install_dir/lib64/libGL.so.1" VirGL/
 
 cat > profile.json <<EOF
 {
