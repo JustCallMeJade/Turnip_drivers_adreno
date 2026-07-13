@@ -1,17 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -eo pipefail
+set -o pipefail
 
 workdir="$(pwd)/workdir"
 install_dir="$workdir/install"
-
-alias install='
-dnf update -y > /dev/null 2>&1
+alias install="dnf update -y > /dev/null 2>&1
 dnf builddep mesa -y > /dev/null 2>&1
-dnf install git cmake python3 wget patchelf -y > /dev/null 2>&1
+dnf install git cmake python3 wget -y > /dev/null 2>&1
 dnf install xcb-* -y > /dev/null 2>&1
-dnf install x11-* -y > /dev/null 2>&1
-'
+dnf install x11-* -y > /dev/null 2>&1"
 
 shopt -s extglob expand_aliases
 
@@ -28,7 +25,7 @@ git clone --depth=1 https://gitlab.freedesktop.org/mesa/mesa.git
 
 cd mesa
 
-export VERSION="$(cat VERSION)"
+export VERSION="$(cat $workdir/mesa/VERSION)"
 
 echo "Patching VirGL for Xlib"
 
@@ -53,16 +50,17 @@ meson setup build \
     -Degl=disabled \
     -Dgles2=disabled \
     -Dgles1=disabled \
-    -Dvideo-codecs=all \
-    -Dstrip=true
+    -Dvideo-codecs=all
 
-ninja -C build -j"$(nproc)" install
+ninja -C build install
 
-cd $install_dir
+echo "Packaging VirGL..."
 
-mkdir -p VirGL
+cd $install_dir/install
 
-cp -P "$install_dir/lib64/libGL.so.1" VirGL/
+mkdir VirGL
+
+mv lib64/libGL.so.1 VirGL
 
 cat > profile.json <<EOF
 {
@@ -80,6 +78,7 @@ cat > profile.json <<EOF
 EOF
 
 tar -cJf "VirGL-$VERSION.tar.xz" VirGL profile.json
+
 mv "VirGL-$VERSION.tar.xz" "VirGL-$VERSION.wcp"
 
 echo "Done! ✅"
