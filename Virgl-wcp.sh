@@ -58,18 +58,7 @@ meson setup build \
 
 ninja -C build -j"$(nproc)" install
 
-echo "Patching libGL..."
-
-cd "$install_dir/lib64"
-
-patchelf --set-soname libGL.so.1.7.0 libGL.so.1.5.0
-mv libGL.so.1.5.0 libGL.so.1.7.0
-rm -f libGL.so.1
-ln -sf libGL.so.1.7.0 libGL.so.1
-
-echo "Packaging VirGL..."
-
-cd ..
+cd $install_dir
 
 mkdir -p VirGL
 
