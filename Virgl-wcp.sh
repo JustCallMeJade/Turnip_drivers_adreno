@@ -44,8 +44,8 @@ meson setup build \
     -Dvulkan-drivers= \
     -Dgallium-va=disabled \
     -Dbuildtype=debugoptimized \
-    -Dllvm=disabled \
-    -Dshared-llvm=disabled \
+    -Dllvm=enabled \
+    -Dshared-llvm=enabled \
     -Dgallium-drivers=virgl \
     -Dshared-glapi=enabled \
     -Dopengl=true \
