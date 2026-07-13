@@ -69,7 +69,7 @@ ln -sf libGL.so.1.7.0 libGL.so.1
 
 echo "Packaging VirGL..."
 
-cd "$install_dir"
+cd ..
 
 mkdir -p VirGL
 
