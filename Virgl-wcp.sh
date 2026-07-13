@@ -61,7 +61,7 @@ echo "Packaging VirGL..."
 
 cd $install_dir/lib64
 
-rm -rf -- ("libGL.so.1")
+rm -rf -- !("libGL.so.1")
 
 cd ..
 
