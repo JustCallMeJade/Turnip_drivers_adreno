@@ -12,8 +12,10 @@ dnf install x11-* -y > /dev/null 2>&1"
 
 shopt -s extglob expand_aliases
 
-mkdir -p "$workdir" "$install_dir"
+mkdir -p "$workdir" && mkdir -p "$install_dir"
 cd "$workdir"
+
+echo "Script only works in Fedora!! Press Ctrl + C to leave" && sleep 5
 
 echo "Installing build deps.."
 
