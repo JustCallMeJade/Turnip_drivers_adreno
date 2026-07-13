@@ -52,7 +52,8 @@ meson setup build \
     -Degl=disabled \
     -Dgles2=disabled \
     -Dgles1=disabled \
-    -Dvideo-codecs=all
+    -Dvideo-codecs=all \
+    -Dstrip=true
 
 ninja -C build install
 
