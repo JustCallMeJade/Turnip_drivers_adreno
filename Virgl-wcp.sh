@@ -66,17 +66,13 @@ patchelf --set-soname libGL.so.1.7.0 libGL.so.1.5.0
 mv libGL.so.1.5.0 libGL.so.1.7.0
 ln -sf libGL.so.1.7.0 libGL.so.1
 
-if [ -L libGL.so ]; then
-    ln -sf libGL.so.1 libGL.so
-fi
-
 echo "Packaging VirGL..."
 
 cd "$install_dir"
 
 mkdir -p VirGL
 
-cp -P lib64/libGL.so.1 VirGL/
+cp -P $install_dir/lib64/libGL.so.1 $install_dir/VirGL/
 
 cat > profile.json <<EOF
 {
