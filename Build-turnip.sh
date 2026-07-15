@@ -63,7 +63,7 @@ SED_FIXUPS=(
 )
 
 deps="git pkg-config cmake git build-essential wget patchelf zip"
-VERSION_GITHUB="26.20-v8.0"
+VERSION_GITHUB="26.3.0-V1.0"
 
 # ---------------------------------------------------------------------------
 # Functions
