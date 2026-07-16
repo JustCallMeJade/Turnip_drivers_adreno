@@ -21,11 +21,12 @@ PATCH_12="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/d
 PATCH_13="https://github.com/lfdevs/mesa-for-android-container/commit/6338905ad3e8767bf5e5b04ffbbc6c3d9ed3d8e2.patch"
 PATCH_14="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_a7xx_gen2_ubwc_hint.py"
 PATCH_15="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_balance_variant.py"
+PATCH_16="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42953.diff"
 
 PATCH_URLS=(
     "$PATCH_1" "$PATCH_2" "$PATCH_3" "$PATCH_4" "$PATCH_5"
     "$PATCH_6" "$PATCH_7" "$PATCH_8" "$PATCH_9" "$PATCH_10"
-    "$PATCH_11" "$PATCH_12" "$PATCH_13" "$PATCH_14" "$PATCH_15"
+    "$PATCH_11" "$PATCH_12" "$PATCH_13" "$PATCH_14" "$PATCH_15" "$PATCH_16"
 )
 
 # Patches applied via `git apply`
@@ -40,6 +41,7 @@ GIT_APPLY_PATCHES=(
 # Patches applied via classic `patch -p1` (diffs git apply chokes on)
 PATCH_P1_PATCHES=(
     40159.diff
+    42953.diff
     0a60c9c4108200fda20016b594dcf8806f29a28e.diff
     4bae24252a344c47a2afcd0fbd238d83bbc29f46.diff
 )
