@@ -295,7 +295,7 @@ build_mesa() {
         -Degl=disabled \
         -Dandroid-strict=false
 
-    ninja -C build-android-aarch64 -j$(nproc -all) install
+    ninja -C build-android-aarch64 -j"$(nproc)" install
 }
 
 package_turnip() {
