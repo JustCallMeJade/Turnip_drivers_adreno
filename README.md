@@ -18,7 +18,7 @@ Updates every Day or whenever
 
 
 
-**Note that dxvk 2.4.1 and higher has a MASSIVE peformance reggression it is reccomended to use lower or dxvk sarek versions**
+**Note that turnip on dxvk 2.4.1 and higher has a MASSIVE peformance reggression it is reccomended to use lower or dxvk sarek versions**
 
 
 
