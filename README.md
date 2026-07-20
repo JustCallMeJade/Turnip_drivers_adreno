@@ -17,6 +17,13 @@ Updates every Day or whenever
 
 
 
+
+**Note that dxvk 2.4.1 and higher has a MASSIVE peformance reggression it is reccomended to use lower or dxvk sarek versions**
+
+
+
+
+
 ![Screenshot](images/Screenshot_20260620_031535_com_winlator_XServerDisplayActivity.jpg)
 
 
