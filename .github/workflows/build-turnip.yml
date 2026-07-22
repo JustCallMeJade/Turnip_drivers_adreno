@@ -1,7 +1,7 @@
 name: Turnip adrenotools
 
 on:
- workflow_dispatch:
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -9,7 +9,7 @@ permissions:
 env:
   API_VER: 35
   BUILD_VARIANT: p2
-  
+
 jobs:
   build:
     runs-on: ubuntu-26.04-arm
@@ -23,8 +23,7 @@ jobs:
 
       - name: Run build script
         run: |
-         apt update && apt install sudo -y && chmod +x Build-turnip.sh
-          ./Build-turnip.sh
+          apt update &> /dev/null && apt install sudo -y &> /dev/null && bash Build-turnip.sh
 
       - name: Debug zip output
         run: |
@@ -43,20 +42,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: v${{ env.VERSION }}
-          body: |
-            ## GPU Support
-
-            - **6xx**: Any. Supported by upstream Turnip.
-            - **7xx**: Any. Supported by upstream Turnip and a couple of hacks.
-            - **8xx**: 810 / 825 / 829 / 830 / 840. Supported by upstream Turnip (originally by patches).
-
-            
-            ## Thanks ❤️
-
-            - **Whitebelyash**
-            - **Vauzi-17**
-            - **Winnative-devs**
-            
+          body_path: ${{ github.workspace }}/CHANGELOG.md
           files: turnip_workdir/turnip/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
