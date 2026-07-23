@@ -44,7 +44,7 @@ PATCHES=(
     "$PATCH_17::patch_p1"
 )
 
-deps="git pkg-config cmake git build-essential wget patchelf zip"
+deps="git pkg-config cmake build-essential wget patchelf zip"
 VERSION_GITHUB="26.3.0-V2.0"
 
 if [[ -z "${API_VER:-}" ]]; then
@@ -79,7 +79,8 @@ sudo sed -i '/^Types:/{/deb-src/! s/$/ deb-src/;}' /etc/apt/sources.list.d/debia
 sudo apt-get update -y > /dev/null 2>&1
 sudo apt-get build-dep mesa -y -qq > /dev/null 2>&1
 sudo apt-get build-dep libarchive -y -qq > /dev/null 2>&1
-sudo apt install -y "$deps" > /dev/null 2>&1
+sudo apt install -y $deps > /dev/null 2>&1
+sudo apt install git pkg-config cmake patchelf build-essential wget zip # fallback when deps installation failed
 
 mkdir -p "$workdir" && cd "$workdir"
 mkdir -p "$workdir/turnip"
