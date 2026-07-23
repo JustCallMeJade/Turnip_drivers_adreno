@@ -79,7 +79,7 @@ sudo sed -i '/^Types:/{/deb-src/! s/$/ deb-src/;}' /etc/apt/sources.list.d/debia
 sudo apt-get update -y > /dev/null 2>&1
 sudo apt-get build-dep mesa -y -qq > /dev/null 2>&1
 sudo apt-get build-dep libarchive -y -qq > /dev/null 2>&1
-sudo apt install -y $deps > /dev/null 2>&1
+sudo apt install -y "$deps" > /dev/null 2>&1
 
 mkdir -p "$workdir" && cd "$workdir"
 mkdir -p "$workdir/turnip"
