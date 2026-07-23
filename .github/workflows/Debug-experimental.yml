@@ -11,6 +11,7 @@ on:
 env:
  API_VER: 35
  BUILD_VARIANT: p2
+ DEBIAN_FROTEND: non-interactive
 
 permissions:
   contents: write
@@ -28,7 +29,7 @@ jobs:
 
       - name: Run build script
         run: |
-         apt update -y &> /dev/null && apt install sudo -y &> /dev/null && bash Build-turnip.sh
+         apt update -y && apt install sudo -y && bash Build-turnip.sh
 
       - name: Debug zip output
         run: |
