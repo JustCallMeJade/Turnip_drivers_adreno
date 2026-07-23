@@ -22,6 +22,7 @@ PATCH_13="https://github.com/lfdevs/mesa-for-android-container/commit/6338905ad3
 PATCH_14="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_a7xx_gen2_ubwc_hint.py"
 PATCH_15="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_balance_variant.py"
 PATCH_16="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42953.diff"
+PATCH_17="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/43136.diff"
 
 PATCHES=(
     "$PATCH_1::git_apply"
@@ -40,6 +41,7 @@ PATCHES=(
     "$PATCH_14::py_script"
     "$PATCH_15::py_script"
     "$PATCH_16::patch_p1"
+    "$PATCH_17::patch_p1"
 )
 
 deps="git pkg-config cmake git build-essential wget patchelf zip"
