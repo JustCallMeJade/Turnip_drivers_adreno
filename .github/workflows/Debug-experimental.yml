@@ -11,7 +11,7 @@ on:
 env:
  API_VER: 35
  BUILD_VARIANT: p2
- DEBIAN_FROTEND: non-interactive
+ DEBIAN_FRONTEND: non-interactive
 
 permissions:
   contents: write
