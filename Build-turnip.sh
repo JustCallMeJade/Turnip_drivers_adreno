@@ -110,7 +110,7 @@ for entry in "${PATCHES[@]}"; do
     type="${entry##*::}"
     filename="$(basename "$url")"
 
-    wget "$url" -q -nv
+    wget "$url" -q -nv || exit 1
 
     case "$type" in
         git_apply)
@@ -217,9 +217,9 @@ meson setup build-android-aarch64 \
     -Dvulkan-beta=true \
     -Dfreedreno-kmds=kgsl \
     -Degl=disabled \
-    -Dandroid-strict=false
+    -Dandroid-strict=false || exit 1
 
-ninja -C build-android-aarch64 -j"$(nproc)" install
+ninja -C build-android-aarch64 -j"$(nproc)" install || exit 1
 
 cd "$workdir/turnip/lib"
 
