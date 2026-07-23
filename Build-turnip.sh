@@ -21,8 +21,7 @@ PATCH_12="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/d
 PATCH_13="https://github.com/lfdevs/mesa-for-android-container/commit/6338905ad3e8767bf5e5b04ffbbc6c3d9ed3d8e2.patch"
 PATCH_14="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_a7xx_gen2_ubwc_hint.py"
 PATCH_15="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_balance_variant.py"
-PATCH_16="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42953.diff"
-PATCH_17="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/43136.diff"
+PATCH_16="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/43136.diff"
 
 PATCHES=(
     "$PATCH_1::git_apply"
@@ -41,7 +40,6 @@ PATCHES=(
     "$PATCH_14::py_script"
     "$PATCH_15::py_script"
     "$PATCH_16::patch_p1"
-    "$PATCH_17::patch_p1"
 )
 
 deps="git pkg-config cmake build-essential wget patchelf zip"
@@ -93,7 +91,6 @@ cd "$workdir"
 wget -q -nv https://github.com/SnowNF/ndk-aarch64-linux/releases/download/0.0.2/android-ndk-r29-linux-aarch64.tar.gz
 tar -xzf android-ndk-r29-linux-aarch64.tar.gz
 
-cd "$workdir"
 git clone "$mesasrc" --depth=1
 cd mesa
 
