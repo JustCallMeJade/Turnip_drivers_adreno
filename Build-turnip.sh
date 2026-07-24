@@ -41,7 +41,7 @@ PATCHES=(
 )
 
 deps="git pkg-config cmake build-essential wget patchelf zip"
-VERSION_GITHUB="26.3.0-V2.0"
+VERSION="26.3.0-V2.0"
 
 if [[ -z "${API_VER:-}" ]]; then
     echo "API_VER is not set. Select an API version:"
@@ -95,10 +95,13 @@ cd mesa
 git config user.name "Turnip-Builder"
 git config user.email "sdddxd86@gmail.com"
 
-rm -f VERSION
-wget https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/VERSION
-
-export VERSION="$(cat "$workdir/mesa/VERSION")"
+rm -f VERSION 
+rm -f ./src/freedreno/common/freedreno_devices.py
+wget https://raw.githubusercontent.com/lfdevs/mesa-for-android-container/refs/heads/adreno-main/src/freedreno/common/freedreno_devices.py
+mv freedreno_devices.py src/freedreno/common
+cat <<EOF > VERSION
+$VERSION
+EOF
 
 cd "$workdir/mesa"
 for entry in "${PATCHES[@]}"; do
@@ -129,7 +132,6 @@ for entry in "${PATCHES[@]}"; do
     esac
 done
 
-cd "$workdir/mesa"
 sed -i 's/anb->handle->/((const native_handle_t \*)anb->handle)->/g' src/vulkan/runtime/vk_android.c || true
 sed -i 's/typedef const native_handle_t\* buffer_handle_t;/typedef void\* buffer_handle_t;/g' include/android_stub/cutils/native_handle.h || true
 sed -i 's/, hnd->handle/, (void \*)hnd->handle/g' src/util/u_gralloc/u_gralloc_fallback.c || true
@@ -241,7 +243,7 @@ EOF
 zip -9 "$workdir/turnip/Turnip-v$VERSION.zip" vulkan.adreno.so meta.json
 
 if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
-    echo "VERSION=$VERSION_GITHUB" >> "$GITHUB_ENV"
+    echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 fi
 
 echo "build complete."
