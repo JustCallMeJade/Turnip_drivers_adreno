@@ -14,6 +14,7 @@ PATCH_5="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/39751.patch"
 PATCH_6="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/fix_a8xx_dev_info.py"
 PATCH_7="https://raw.githubusercontent.com/JustCallMeJade/Turnip_drivers_adreno/main/40159.diff"
 PATCH_8="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/fix_gralloc_flushall.py"
+PATCH_9="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/43169.patch"
 PATCH_10="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/42489.patch"
 PATCH_11="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/apply_perf_variant.py"
 PATCH_12="https://raw.githubusercontent.com/WinNative-Emu/Drivers/main/patches/disable_64b_image_atomics.py"
@@ -31,6 +32,7 @@ PATCHES=(
     "$PATCH_6::py_script"
     "$PATCH_7::patch_p1"
     "$PATCH_8::py_script"
+    "$PATCH_9::git_apply"
     "$PATCH_10::git_apply"
     "$PATCH_11::py_script"
     "$PATCH_12::py_script"
@@ -41,7 +43,7 @@ PATCHES=(
 )
 
 deps="git pkg-config cmake build-essential wget patchelf zip"
-VERSION="26.3.0-V2.0"
+VERSION="26.3.0-V3.0"
 
 if [[ -z "${API_VER:-}" ]]; then
     echo "API_VER is not set. Select an API version:"
