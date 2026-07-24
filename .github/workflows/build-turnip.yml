@@ -1,6 +1,10 @@
 name: Turnip adrenotools
 
 on:
+  push:
+    paths:
+      - "CHANGELOGS.md"
+
   workflow_dispatch:
 
 permissions:
@@ -42,7 +46,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: v${{ env.VERSION }}
-          body_path: ${{ github.workspace }}/CHANGELOG.md
+          body_path: ${{ github.workspace }}/CHANGELOGS.md
           files: turnip_workdir/turnip/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
