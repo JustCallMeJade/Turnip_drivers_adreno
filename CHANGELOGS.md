@@ -21,8 +21,27 @@
 
 - **710** : **Supported**  ✓
 - **720** : **Supported**  ✓
-- 
+- **725** : **Supported**  ✓
+- **730** : **Supported**  ✓
+- **735** : **Supported**  ✓
+- **740** : **Supported**  ✓
+- **750** : **Supported**  ✓
 
+### 8XX
+
+- **810** : **Supported**  ✓
+- **829** : **Supported**  ✓
+- **830** : **Supported**  ✓
+
+ ## Changelogs
+
+ - **Updated to upstream mesa**
+
+ ## Thank you ♥
+
+- **Vauzi-17**
+- **Whitebelyash**
+- **Winnative-devs**
 
 
 
