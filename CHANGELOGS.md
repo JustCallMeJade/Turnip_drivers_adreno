@@ -30,12 +30,14 @@
 ### 8XX
 
 - **810** : **Supported**  ✓
+- **825** : **Supported**  ✓
 - **829** : **Supported**  ✓
 - **830** : **Supported**  ✓
+- **840** : **Supported**  ✓
 
  ## Changelogs
 
- - **Updated to upstream mesa**
+ - **Updated to upstream Mesa**
 
  ## Thank you ♥
 
