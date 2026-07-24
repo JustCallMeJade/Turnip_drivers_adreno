@@ -27,7 +27,7 @@ jobs:
 
       - name: Run build script
         run: |
-          apt update &> /dev/null && apt install sudo -y &> /dev/null && bash Build-turnip.sh
+          apt update && apt install sudo -y --fix-missing && bash Build-turnip.sh
 
       - name: Debug zip output
         run: |
